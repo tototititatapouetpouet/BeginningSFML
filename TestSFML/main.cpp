@@ -73,8 +73,9 @@ int main()
         
         window.draw(&lines[0], 14, sf::Lines);
 
-        sprite.setRotation(-2.f * angle);
-        sprite.setPosition(300.f - 128.f / 2, 300.f - 128.f / 2);
+        sprite.setOrigin(64, 64);
+        sprite.setRotation(-2.f * angle / 3.1415926f * 180.f);
+        sprite.setPosition(300.f, 300.f);
 
         window.draw(sprite);
 
