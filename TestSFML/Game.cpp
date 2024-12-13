@@ -1,29 +1,129 @@
 #include "Game.h"
 
+//  TODO: To be removed!!!!!!!
+#include <iostream>
+
+#include <array>
+
 #include "IGameObject.h"
 #include "Ship.h"
+#include "Enemy.h"
 
 Game::Game() : m_window(sf::VideoMode(600, 600), "SFML works!")
 {
     m_window.setFramerateLimit(60);
 
-    for (int i = 0; i < 10000; ++i)
-    {
-        Ship* ship = new Ship();
-        m_allGameObjects.push_back(ship);
-    }
+    new Ship(*this, { 300.f, 300.f });
+    new Ship(*this, { 400.f, 400.f });
+    new Enemy(*this, { 0.f, 300.f }, { 40.f, 0.f });
+    new Enemy(*this, { -80.f, 300.f }, { 40.f, 0.f });
 }
 
 Game::~Game()
 {
-    for (auto& gameObject : m_allGameObjects)
+    auto allGameObjects = m_allGameObjects;
+    for (auto& gameObject : allGameObjects)
         delete gameObject;
+}
+
+void Game::_addObject(IGameObject* go)
+{
+    m_toBeAddedGameObjects.push_back(go);
+}
+
+struct RemoveNonExisitingGameObject : public std::runtime_error
+{
+    RemoveNonExisitingGameObject() : std::runtime_error("Try to remove non existing Game Object.")
+    { }
+};
+
+void Game::_removeObject(IGameObject* go)
+{
+    auto it = std::find(m_allGameObjects.begin(), m_allGameObjects.end(), go);
+    if (it == m_allGameObjects.end()) // No elem found.
+        throw RemoveNonExisitingGameObject();
+
+    m_allGameObjects.erase(it);
+}
+
+void Game::_toBeRemoveObject(IGameObject* go)
+{
+    m_toBeRemovedGameObjects.push_back(go);
+}
+
+void Game::_cleanObject()
+{
+    for (auto& go : m_toBeRemovedGameObjects)
+        delete go;
+
+    m_toBeRemovedGameObjects.clear();
+}
+
+void Game::_deferedAddObject(IGameObject* go)
+{
+    m_allGameObjects.push_back(go);
+}
+
+void Game::_deferedAddObjects()
+{
+    for (auto& go : m_toBeAddedGameObjects)
+        _deferedAddObject(go);
+
+    m_toBeAddedGameObjects.clear();
 }
 
 void Game::update()
 {
+    _deferedAddObjects();
+
+    detectCollision();
     for (auto& gameObject : m_allGameObjects)
         gameObject->update();
+
+    _cleanObject();
+}
+
+void Game::detectCollision()
+{
+    for (size_t i = 0; i < m_allGameObjects.size(); ++i)
+    {
+        for (size_t j = i + 1; j < m_allGameObjects.size(); ++j)
+        {
+            IGameObject* go1 = m_allGameObjects[i];
+            IGameObject* go2 = m_allGameObjects[j];
+            
+            bool isIntersection = doesIntersect(go1->getBoundingBox(), go2->getBoundingBox());
+            if (isIntersection)
+                onCollision(go1, go2);
+        }
+    }
+}
+
+void Game::onCollision(IGameObject* go1, IGameObject* go2)
+{
+    if (go1->gameObjectType() == SHIP_TYPE && go2->gameObjectType() == ENEMY_TYPE)
+    {
+        static_cast<Ship*>(go1)->takeDamage();
+        go2->destroy();
+    }
+
+    if (go1->gameObjectType() == ENEMY_TYPE && go2->gameObjectType() == SHIP_TYPE)
+    {
+        static_cast<Ship*>(go2)->takeDamage();
+        go1->destroy();
+    }
+
+    if (go1->gameObjectType() == SHIP_TYPE && go2->gameObjectType() == FIREBALL_TYPE)
+    {
+        static_cast<Ship*>(go1)->takeDamage(2);
+        go2->destroy();
+    }
+
+    if (go1->gameObjectType() == FIREBALL_TYPE && go2->gameObjectType() == SHIP_TYPE)
+    {
+        static_cast<Ship*>(go2)->takeDamage(1);
+        go1->destroy();
+    }
 }
 
 void Game::render()
@@ -33,7 +133,26 @@ void Game::render()
     for (auto& gameObject : m_allGameObjects)
         gameObject->render(m_window);
 
+    renderBoundingBox();
+
     m_window.display();
+}
+
+void Game::renderBoundingBox()
+{
+    for (const auto& go : m_allGameObjects)
+    {
+        AABB bbox = go->getBoundingBox();
+        sf::Color col = sf::Color::Green;
+        std::array<sf::Vertex, 8> lines = {
+            sf::Vertex{{bbox.min.x, bbox.min.y}, col}, sf::Vertex{{bbox.max.x, bbox.min.y}, col}
+          , sf::Vertex{{bbox.max.x, bbox.min.y}, col}, sf::Vertex{{bbox.max.x, bbox.max.y}, col}
+          , sf::Vertex{{bbox.max.x, bbox.max.y}, col}, sf::Vertex{{bbox.min.x, bbox.max.y}, col}
+          , sf::Vertex{{bbox.min.x, bbox.max.y}, col}, sf::Vertex{{bbox.min.x, bbox.min.y}, col}
+        };
+
+        m_window.draw(&lines[0], lines.size(), sf::Lines);
+    }
 }
 
 void Game::run()
@@ -54,4 +173,9 @@ void Game::handleInputs()
         if (event.type == sf::Event::Closed)
             m_window.close();
     }
+}
+
+TextureCache& Game::getTextureCache()
+{
+    return m_textureCache;
 }

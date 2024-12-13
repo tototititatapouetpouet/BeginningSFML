@@ -1,9 +1,21 @@
 #include "Ship.h"
 
-Ship::Ship() : m_angle(0.f), m_position(300.0f, 300.0f)
+#include "Game.h"
+#include "Fireball.h"
+
+Vec2 getShipSize()
 {
-    m_texture.loadFromFile("C:\\repoGC\\BeginningSFML\\Truc.bmp");
-    m_sprite.setTexture(m_texture);
+    return { 128.f, 128.f };
+}
+
+Ship::Ship(Game& game, const Vec2& position)
+  : IGameObject(game)
+  , m_PV(2)
+  , m_angle(0.f)
+  , m_position(position)
+  , m_isDead(false)
+{
+    m_sprite.setTexture(game.getTextureCache().getTexture("C:\\repoGC\\BeginningSFML\\Truc.bmp"));
 }
 
 void Ship::handleInputs()
@@ -19,7 +31,44 @@ void Ship::update()
 void Ship::render(sf::RenderWindow& window)
 {
     m_sprite.setRotation(m_angle / 3.14159265f * 180.f);
-    m_sprite.setOrigin(128.f / 2.f, 128.f / 2.f);
-    m_sprite.setPosition(m_position);
+    m_sprite.setOrigin(getShipSize().x / 2.f, getShipSize().y / 2.f);
+    m_sprite.setPosition(m_position.x, m_position.y);
     window.draw(m_sprite);
+}
+
+AABB Ship::getBoundingBox() const
+{
+    return { m_position - getShipSize() / 2.f, m_position + getShipSize() / 2.f };
+}
+
+GameObjectType Ship::gameObjectType()
+{
+    return SHIP_TYPE;
+}
+
+void Ship::takeDamage(int dmg)
+{
+    m_PV -= dmg;
+    if (m_PV <= 0)
+        die();
+}
+
+void Ship::die()
+{
+    if (m_isDead)
+        return;
+
+    m_isDead = true;
+    const int nbFireball = 16;
+    const float speed = 36.f;
+    
+    float dAngle = 2.0f * 3.1415926535f / static_cast<float>(nbFireball);
+
+    for (int i = 0; i < nbFireball; ++i)
+    {
+        float cAngle = dAngle * static_cast<float>(i);
+        new Fireball(m_game, m_position, Vec2{ speed * std::cos(cAngle) , speed * std::sin(cAngle) });
+    }
+
+    destroy();
 }

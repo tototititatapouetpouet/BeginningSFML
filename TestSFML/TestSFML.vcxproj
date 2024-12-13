@@ -137,14 +137,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="Fireball.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="IGameObject.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MyMath.cpp" />
     <ClCompile Include="Ship.cpp" />
+    <ClCompile Include="TextureCache.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Fireball.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="IGameObject.h" />
+    <ClInclude Include="MyMath.h" />
     <ClInclude Include="Ship.h" />
+    <ClInclude Include="TextureCache.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

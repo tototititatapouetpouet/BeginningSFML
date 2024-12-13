@@ -6,24 +6,22 @@
 
 class Game;
 
-class Ship : public IGameObject
+class Fireball : public IGameObject
 {
 public:
-    Ship(Game& game, const Vec2& position);
+    Fireball(Game& game, const Vec2& position, const Vec2& velocity);
 
     void handleInputs() override;
     void update() override;
     void render(sf::RenderWindow& window) override;
     AABB getBoundingBox() const override;
-    virtual GameObjectType gameObjectType() override;
-    void takeDamage(int dmg = 1);
-    void die();
+    GameObjectType gameObjectType() override;
 
 private:
     sf::Sprite m_sprite;
 
-    int m_PV;
-    float m_angle;
     Vec2 m_position;
-    bool m_isDead;
+    Vec2 m_velocity;
 };
+
+

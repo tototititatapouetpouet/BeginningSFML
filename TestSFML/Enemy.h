@@ -1,29 +1,28 @@
 #pragma once
 
+#pragma once
+
 #include "IGameObject.h"
 
 #include <SFML/Graphics.hpp>
 
 class Game;
 
-class Ship : public IGameObject
+class Enemy : public IGameObject
 {
 public:
-    Ship(Game& game, const Vec2& position);
+    Enemy(Game& game, const Vec2& position, const Vec2& velocity);
 
     void handleInputs() override;
     void update() override;
     void render(sf::RenderWindow& window) override;
     AABB getBoundingBox() const override;
-    virtual GameObjectType gameObjectType() override;
-    void takeDamage(int dmg = 1);
-    void die();
+    GameObjectType gameObjectType() override;
 
 private:
     sf::Sprite m_sprite;
 
-    int m_PV;
-    float m_angle;
     Vec2 m_position;
-    bool m_isDead;
+    Vec2 m_velocity;
 };
+
