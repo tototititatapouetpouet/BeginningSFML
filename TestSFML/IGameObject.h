@@ -11,6 +11,7 @@ enum GameObjectType
     SHIP_TYPE = 0
   , ENEMY_TYPE = 1
   , FIREBALL_TYPE = 2
+  , BARRIER_TYPE = 3
 };
 
 class IGameObject

@@ -8,10 +8,16 @@
 #include "IGameObject.h"
 #include "Ship.h"
 #include "Enemy.h"
+#include "Barrier.h"
 
 Game::Game() : m_window(sf::VideoMode(600, 600), "SFML works!")
 {
     m_window.setFramerateLimit(60);
+
+    new Barrier(*this, { { -20.f, -20.f }, { 620.f, 10.f } });
+    new Barrier(*this, { { -20.f, 590.f }, { 620.f, 620.f } });
+    new Barrier(*this, { { -20.f, -20.f }, { 10.f, 620.f } });
+    new Barrier(*this, { { 590.f, -20.f }, { 620.f, 620.f } });
 
     new Ship(*this, { 300.f, 300.f });
     new Ship(*this, { 400.f, 400.f });
@@ -48,6 +54,11 @@ void Game::_removeObject(IGameObject* go)
 
 void Game::_toBeRemoveObject(IGameObject* go)
 {
+    auto it = std::find(m_toBeRemovedGameObjects.begin(), m_toBeRemovedGameObjects.end(), go);
+
+    if (it != m_toBeRemovedGameObjects.end())
+        return;
+
     m_toBeRemovedGameObjects.push_back(go);
 }
 
@@ -96,33 +107,6 @@ void Game::detectCollision()
             if (isIntersection)
                 onCollision(go1, go2);
         }
-    }
-}
-
-void Game::onCollision(IGameObject* go1, IGameObject* go2)
-{
-    if (go1->gameObjectType() == SHIP_TYPE && go2->gameObjectType() == ENEMY_TYPE)
-    {
-        static_cast<Ship*>(go1)->takeDamage();
-        go2->destroy();
-    }
-
-    if (go1->gameObjectType() == ENEMY_TYPE && go2->gameObjectType() == SHIP_TYPE)
-    {
-        static_cast<Ship*>(go2)->takeDamage();
-        go1->destroy();
-    }
-
-    if (go1->gameObjectType() == SHIP_TYPE && go2->gameObjectType() == FIREBALL_TYPE)
-    {
-        static_cast<Ship*>(go1)->takeDamage(2);
-        go2->destroy();
-    }
-
-    if (go1->gameObjectType() == FIREBALL_TYPE && go2->gameObjectType() == SHIP_TYPE)
-    {
-        static_cast<Ship*>(go2)->takeDamage(1);
-        go1->destroy();
     }
 }
 

@@ -137,9 +137,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Barrier.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Fireball.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameCollision.cpp" />
     <ClCompile Include="IGameObject.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MyMath.cpp" />
@@ -147,6 +149,7 @@
     <ClCompile Include="TextureCache.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Barrier.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Fireball.h" />
     <ClInclude Include="Game.h" />
