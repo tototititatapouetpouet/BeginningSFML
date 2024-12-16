@@ -8,12 +8,17 @@ struct Vec2
     float y;
 
     Vec2& operator+=(const Vec2& op2);
+
+    float getLength() const;
 };
 
 Vec2 operator+(const Vec2& op1, const Vec2& op2);
 Vec2 operator-(const Vec2& op1, const Vec2& op2);
 Vec2 operator/(const Vec2& op1, const float& op2);
 Vec2 operator*(const Vec2& op1, const float& op2);
+Vec2 operator*(const float& op1, const Vec2& op2);
+
+float dotProduct(const Vec2& op1, const Vec2& op2);
 
 struct AABB
 {

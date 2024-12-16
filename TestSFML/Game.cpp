@@ -7,22 +7,30 @@
 
 #include "IGameObject.h"
 #include "Ship.h"
+#include "PlayerShip.h"
 #include "Enemy.h"
 #include "Barrier.h"
 
-Game::Game() : m_window(sf::VideoMode(600, 600), "SFML works!")
+constexpr int getWindowWidth() { return 1900; }
+constexpr int getWindowHeight() { return 1000; }
+
+Game::Game() : m_window(sf::VideoMode(getWindowWidth(), getWindowHeight()), "SFML works!")
 {
     m_window.setFramerateLimit(60);
 
-    new Barrier(*this, { { -20.f, -20.f }, { 620.f, 10.f } });
-    new Barrier(*this, { { -20.f, 590.f }, { 620.f, 620.f } });
-    new Barrier(*this, { { -20.f, -20.f }, { 10.f, 620.f } });
-    new Barrier(*this, { { 590.f, -20.f }, { 620.f, 620.f } });
+    new Barrier(*this, { { -20.f, -20.f }, { getWindowWidth() + 20.f, 10.f } });
+    new Barrier(*this, { { -20.f, getWindowHeight() - 10.f }, { getWindowWidth() + 20.f, getWindowHeight() + 20.f } });
+    new Barrier(*this, { { -20.f, -20.f }, { 10.f, getWindowHeight() + 20.f } });
+    new Barrier(*this, { { getWindowWidth() - 10.f, -20.f }, { getWindowWidth() + 20.f, getWindowHeight() + 20.f } });
 
+    /*
     new Ship(*this, { 300.f, 300.f });
     new Ship(*this, { 400.f, 400.f });
     new Enemy(*this, { 0.f, 300.f }, { 40.f, 0.f });
     new Enemy(*this, { -80.f, 300.f }, { 40.f, 0.f });
+    */
+
+    new PlayerShip(*this, { 300.0f, 300.f });
 }
 
 Game::~Game()
@@ -89,7 +97,7 @@ void Game::update()
 
     detectCollision();
     for (auto& gameObject : m_allGameObjects)
-        gameObject->update();
+        gameObject->update(1.f / 60.f); //  TODO: fous ça ailleurs !!!
 
     _cleanObject();
 }
@@ -157,6 +165,9 @@ void Game::handleInputs()
         if (event.type == sf::Event::Closed)
             m_window.close();
     }
+
+    for (auto& go : m_allGameObjects)
+        go->handleInputs(event);
 }
 
 TextureCache& Game::getTextureCache()

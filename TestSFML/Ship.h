@@ -11,8 +11,8 @@ class Ship : public IGameObject
 public:
     Ship(Game& game, const Vec2& position);
 
-    void handleInputs() override;
-    void update() override;
+    void handleInputs(const sf::Event& event) override;
+    void update(float deltaTime) override;
     void render(sf::RenderWindow& window) override;
     AABB getBoundingBox() const override;
     virtual GameObjectType gameObjectType() override;

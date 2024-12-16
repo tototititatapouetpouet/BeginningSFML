@@ -11,8 +11,8 @@ class Fireball : public IGameObject
 public:
     Fireball(Game& game, const Vec2& position, const Vec2& velocity);
 
-    void handleInputs() override;
-    void update() override;
+    void handleInputs(const sf::Event& event) override;
+    void update(float deltaTime) override;
     void render(sf::RenderWindow& window) override;
     AABB getBoundingBox() const override;
     GameObjectType gameObjectType() override;

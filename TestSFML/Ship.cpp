@@ -18,12 +18,12 @@ Ship::Ship(Game& game, const Vec2& position)
     m_sprite.setTexture(game.getTextureCache().getTexture("C:\\repoGC\\BeginningSFML\\Truc.bmp"));
 }
 
-void Ship::handleInputs()
+void Ship::handleInputs(const sf::Event& event)
 {
 
 }
 
-void Ship::update()
+void Ship::update(float deltaTime)
 {
     m_angle += 0.01f;
 }

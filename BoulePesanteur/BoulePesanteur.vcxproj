@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{9611fc9d-a9cd-4d77-823f-b325ef74ab12}</ProjectGuid>
-    <RootNamespace>TestSFML</RootNamespace>
+    <ProjectGuid>{821e2204-b1cf-47cf-97bb-a97b067e671e}</ProjectGuid>
+    <RootNamespace>BoulePesanteur</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -137,28 +137,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Barrier.cpp" />
-    <ClCompile Include="Enemy.cpp" />
-    <ClCompile Include="Fireball.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="GameCollision.cpp" />
-    <ClCompile Include="IGameObject.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="MyMath.cpp" />
-    <ClCompile Include="PlayerShip.cpp" />
-    <ClCompile Include="Ship.cpp" />
-    <ClCompile Include="TextureCache.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Barrier.h" />
-    <ClInclude Include="Enemy.h" />
-    <ClInclude Include="Fireball.h" />
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="IGameObject.h" />
-    <ClInclude Include="MyMath.h" />
-    <ClInclude Include="PlayerShip.h" />
-    <ClInclude Include="Ship.h" />
-    <ClInclude Include="TextureCache.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

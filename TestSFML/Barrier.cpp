@@ -3,13 +3,13 @@
 Barrier::Barrier(Game& game, const AABB& bbox) : IGameObject(game), m_bbox(bbox)
 { }
 
-void Barrier::handleInputs()
+void Barrier::handleInputs(const sf::Event& event)
 { }
 
 void Barrier::render(sf::RenderWindow& window)
 {}
 
-void Barrier::update()
+void Barrier::update(float deltaTime)
 {
 }
 

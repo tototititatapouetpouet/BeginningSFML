@@ -15,12 +15,12 @@ Enemy::Enemy(Game& game, const Vec2& position, const Vec2& velocity)
     m_sprite.setTexture(game.getTextureCache().getTexture("C:\\repoGC\\BeginningSFML\\Enemy.bmp"));
 }
 
-void Enemy::handleInputs()
+void Enemy::handleInputs(const sf::Event& event)
 {
 
 }
 
-void Enemy::update()
+void Enemy::update(float deltaTime)
 {
     float dt = 1.f / 60.f;
     m_position += m_velocity * dt;

@@ -15,12 +15,12 @@ Fireball::Fireball(Game& game, const Vec2& position, const Vec2& velocity)
     m_sprite.setTexture(game.getTextureCache().getTexture("C:\\repoGC\\BeginningSFML\\Fireball.bmp"));
 }
 
-void Fireball::handleInputs()
+void Fireball::handleInputs(const sf::Event& event)
 {
 
 }
 
-void Fireball::update()
+void Fireball::update(float deltaTime)
 {
     float dt = 1.f / 60.f;
     m_position += m_velocity * dt;
