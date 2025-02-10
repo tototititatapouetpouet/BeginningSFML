@@ -14,6 +14,7 @@ enum GameObjectType
   , FIREBALL_TYPE = 2
   , BARRIER_TYPE = 3
   , PLAYERSHIP_TYPE = 4
+  , CAPITAL_SHIP = 5
 };
 
 class IGameObject

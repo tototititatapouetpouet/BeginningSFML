@@ -1,7 +1,5 @@
 #pragma once
 
-#pragma once
-
 #include "IGameObject.h"
 
 #include <SFML/Graphics.hpp>

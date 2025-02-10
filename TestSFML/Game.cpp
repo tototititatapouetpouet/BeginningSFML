@@ -1,13 +1,11 @@
 #include "Game.h"
 
-//  TODO: To be removed!!!!!!!
-#include <iostream>
-
 #include <array>
 
 #include "IGameObject.h"
 #include "Ship.h"
 #include "PlayerShip.h"
+#include "CapitalShip.h"
 #include "Enemy.h"
 #include "Barrier.h"
 
@@ -31,8 +29,7 @@ Game::Game(const std::string& execFilePath)
     new Enemy(*this, { 0.f, 300.f }, { 40.f, 0.f });
     new Enemy(*this, { -80.f, 300.f }, { 40.f, 0.f });
 
-
-    new PlayerShip(*this, { 600.0f, 300.f });
+    new CapitalShip(*this, { 600.0f, 300.f });
 }
 
 Game::~Game()
