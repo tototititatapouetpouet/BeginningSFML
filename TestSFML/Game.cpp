@@ -23,14 +23,14 @@ Game::Game() : m_window(sf::VideoMode(getWindowWidth(), getWindowHeight()), "SFM
     new Barrier(*this, { { -20.f, -20.f }, { 10.f, getWindowHeight() + 20.f } });
     new Barrier(*this, { { getWindowWidth() - 10.f, -20.f }, { getWindowWidth() + 20.f, getWindowHeight() + 20.f } });
 
-    /*
+
     new Ship(*this, { 300.f, 300.f });
     new Ship(*this, { 400.f, 400.f });
     new Enemy(*this, { 0.f, 300.f }, { 40.f, 0.f });
     new Enemy(*this, { -80.f, 300.f }, { 40.f, 0.f });
-    */
 
-    new PlayerShip(*this, { 300.0f, 300.f });
+
+    new PlayerShip(*this, { 600.0f, 300.f });
 }
 
 Game::~Game()

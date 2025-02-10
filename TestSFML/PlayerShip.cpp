@@ -3,15 +3,21 @@
 #include "Game.h"
 #include "Fireball.h"
 
+
+// set de valeur qui va bien pour un vaisseau.
+
+//Vec2 getPlayerShipSize() { return { 32.f, 32.f }; }
+//float getPlayerShipThrust() { return 400.f; }
+//float getPlayerShipRateOfTurn() { return 0.05f; }
+//float getPlayerShipFluidFrictionCoef() { return 1.0f; }
+//float getPlayerShipMaxVelocity() { return 300.f; }
+
 Vec2 getPlayerShipSize() { return { 32.f, 32.f }; }
-
-float getPlayerShipThrust() { return 400.f; }
-
+float getPlayerShipThrust() { return 2000.f; }
 float getPlayerShipRateOfTurn() { return 0.05f; }
-
-float getPlayerShipFluidFrictionCoef() { return 1.0f; }
-
+float getPlayerShipFluidFrictionCoef() { return 15.0f; }
 float getPlayerShipMaxVelocity() { return 300.f; }
+
 
 PlayerShip::PlayerShip(Game& game, const Vec2& position)
     : IGameObject(game)
@@ -27,6 +33,7 @@ PlayerShip::PlayerShip(Game& game, const Vec2& position)
 
 void PlayerShip::handleInputs(const sf::Event& event)
 {
+    if (event.type == sf::Event::KeyPressed)
     m_isAccelerating = sf::Keyboard::isKeyPressed(sf::Keyboard::Up);
     m_isTurningLeft = sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
     m_isTurningRight = sf::Keyboard::isKeyPressed(sf::Keyboard::Right);
@@ -38,10 +45,12 @@ void PlayerShip::update(float deltaTime)
     if (m_isTurningRight) m_angle += getPlayerShipRateOfTurn();
 
     Vec2 acceleration{ 0.f, 0.f };
-    acceleration = -getPlayerShipFluidFrictionCoef() * m_velocity;
+    if (!m_isAccelerating)
+        acceleration = -getPlayerShipFluidFrictionCoef() * m_velocity;
+
     if (m_isAccelerating)
         acceleration += getPlayerShipThrust() * Vec2{std::cos(m_angle), std::sin(m_angle) };
-
+     
     m_position += m_velocity * deltaTime;
     m_velocity += acceleration * deltaTime;
 

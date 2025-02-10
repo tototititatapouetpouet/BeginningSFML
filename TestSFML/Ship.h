@@ -16,6 +16,7 @@ public:
     void render(sf::RenderWindow& window) override;
     AABB getBoundingBox() const override;
     virtual GameObjectType gameObjectType() override;
+    static GameObjectType staticGameObjectType() { return SHIP_TYPE; }
     void takeDamage(int dmg = 1);
     void die();
 
