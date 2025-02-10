@@ -5,11 +5,11 @@
 
 Vec2 getTurretSize() { return { 32.f, 32.f }; }
 
-Turret::Turret(Game& game, const Vec2& position)
+Turret::Turret(IGameObjectContainer& game, const Vec2& position)
     : IGameObject(game)
     , m_position(position)
 {
-    m_sprite.setTexture(game.getTextureCache().getTexture("Turret.png"));
+    m_sprite.setTexture(getOwner().getGame().getTextureCache().getTexture("Turret.png"));
 }
 
 void Turret::handleInputs(const sf::Event& event)
@@ -50,8 +50,8 @@ float getCapitalShipFluidFrictionCoef() { return 1.0f; }
 float getCapitalShipMaxVelocity() { return 300.f; }
 
 
-CapitalShip::CapitalShip(Game& game, const Vec2& position)
-    : IGameObject(game)
+CapitalShip::CapitalShip(IGameObjectContainer& game, const Vec2& position)
+    : IGameObjectCompound(game)
     , m_PV(2)
     , m_angle(0.f)
     , m_position(position)
@@ -59,7 +59,7 @@ CapitalShip::CapitalShip(Game& game, const Vec2& position)
     , m_isDead(false)
     , m_isAccelerating(false)
 {
-    m_sprite.setTexture(game.getTextureCache().getTexture("CapitalShip.png"));
+    m_sprite.setTexture(getOwner().getGame().getTextureCache().getTexture("CapitalShip.png"));
 
     new Turret(game, m_position + Vec2(-16.f, -32.f));
 }

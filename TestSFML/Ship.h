@@ -4,12 +4,12 @@
 
 #include <SFML/Graphics.hpp>
 
-class Game;
+class IGameObjectContainer;
 
 class Ship : public IGameObject
 {
 public:
-    Ship(Game& game, const Vec2& position);
+    Ship(IGameObjectContainer& game, const Vec2& position);
 
     void handleInputs(const sf::Event& event) override;
     void update(float deltaTime) override;

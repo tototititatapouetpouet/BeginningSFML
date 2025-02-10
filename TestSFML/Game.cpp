@@ -34,60 +34,6 @@ Game::Game(const std::string& execFilePath)
 
 Game::~Game()
 {
-    auto allGameObjects = m_allGameObjects;
-    for (auto& gameObject : allGameObjects)
-        delete gameObject;
-}
-
-void Game::_addObject(IGameObject* go)
-{
-    m_toBeAddedGameObjects.push_back(go);
-}
-
-struct RemoveNonExisitingGameObject : public std::runtime_error
-{
-    RemoveNonExisitingGameObject() : std::runtime_error("Try to remove non existing Game Object.")
-    { }
-};
-
-void Game::_removeObject(IGameObject* go)
-{
-    auto it = std::find(m_allGameObjects.begin(), m_allGameObjects.end(), go);
-    if (it == m_allGameObjects.end()) // No elem found.
-        throw RemoveNonExisitingGameObject();
-
-    m_allGameObjects.erase(it);
-}
-
-void Game::_toBeRemoveObject(IGameObject* go)
-{
-    auto it = std::find(m_toBeRemovedGameObjects.begin(), m_toBeRemovedGameObjects.end(), go);
-
-    if (it != m_toBeRemovedGameObjects.end())
-        return;
-
-    m_toBeRemovedGameObjects.push_back(go);
-}
-
-void Game::_cleanObject()
-{
-    for (auto& go : m_toBeRemovedGameObjects)
-        delete go;
-
-    m_toBeRemovedGameObjects.clear();
-}
-
-void Game::_deferedAddObject(IGameObject* go)
-{
-    m_allGameObjects.push_back(go);
-}
-
-void Game::_deferedAddObjects()
-{
-    for (auto& go : m_toBeAddedGameObjects)
-        _deferedAddObject(go);
-
-    m_toBeAddedGameObjects.clear();
 }
 
 void Game::update()

@@ -7,12 +7,12 @@ Vec2 getEnemySize()
     return { 64.f, 64.f };
 }
 
-Enemy::Enemy(Game& game, const Vec2& position, const Vec2& velocity)
+Enemy::Enemy(IGameObjectContainer& game, const Vec2& position, const Vec2& velocity)
     : IGameObject(game)
     , m_position(position)
     , m_velocity(velocity)
 {
-    m_sprite.setTexture(game.getTextureCache().getTexture("Enemy.bmp"));
+    m_sprite.setTexture(getOwner().getGame().getTextureCache().getTexture("Enemy.bmp"));
 }
 
 void Enemy::handleInputs(const sf::Event& event)

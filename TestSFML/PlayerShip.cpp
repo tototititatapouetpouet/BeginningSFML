@@ -19,7 +19,7 @@ float getPlayerShipFluidFrictionCoef() { return 15.0f; }
 float getPlayerShipMaxVelocity() { return 300.f; }
 
 
-PlayerShip::PlayerShip(Game& game, const Vec2& position)
+PlayerShip::PlayerShip(IGameObjectContainer& game, const Vec2& position)
     : IGameObject(game)
     , m_PV(2)
     , m_angle(0.f)
@@ -28,7 +28,7 @@ PlayerShip::PlayerShip(Game& game, const Vec2& position)
     , m_isDead(false)
     , m_isAccelerating(false)
 {
-    m_sprite.setTexture(game.getTextureCache().getTexture("PlayerShip.bmp"));
+    m_sprite.setTexture(getOwner().getGame().getTextureCache().getTexture("PlayerShip.bmp"));
 }
 
 void PlayerShip::handleInputs(const sf::Event& event)
@@ -97,7 +97,7 @@ void PlayerShip::die()
     for (int i = 0; i < nbFireball; ++i)
     {
         float cAngle = dAngle * static_cast<float>(i);
-        new Fireball(m_game, m_position, Vec2{ speed * std::cos(cAngle) , speed * std::sin(cAngle) });
+        new Fireball(m_owner, m_position, Vec2{ speed * std::cos(cAngle) , speed * std::sin(cAngle) });
     }
 
     destroy();

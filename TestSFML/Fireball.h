@@ -4,12 +4,12 @@
 
 #include <SFML/Graphics.hpp>
 
-class Game;
+class IGameObjectContainer;
 
 class Fireball : public IGameObject
 {
 public:
-    Fireball(Game& game, const Vec2& position, const Vec2& velocity);
+    Fireball(IGameObjectContainer& game, const Vec2& position, const Vec2& velocity);
 
     void handleInputs(const sf::Event& event) override;
     void update(float deltaTime) override;

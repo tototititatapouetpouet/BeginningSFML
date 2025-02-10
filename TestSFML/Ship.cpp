@@ -8,14 +8,14 @@ Vec2 getShipSize()
     return { 128.f, 128.f };
 }
 
-Ship::Ship(Game& game, const Vec2& position)
+Ship::Ship(IGameObjectContainer& game, const Vec2& position)
   : IGameObject(game)
   , m_PV(2)
   , m_angle(0.f)
   , m_position(position)
   , m_isDead(false)
 {
-    m_sprite.setTexture(game.getTextureCache().getTexture("Truc.bmp"));
+    m_sprite.setTexture(getOwner().getGame().getTextureCache().getTexture("Truc.bmp"));
 }
 
 void Ship::handleInputs(const sf::Event& event)
@@ -67,7 +67,7 @@ void Ship::die()
     for (int i = 0; i < nbFireball; ++i)
     {
         float cAngle = dAngle * static_cast<float>(i);
-        new Fireball(m_game, m_position, Vec2{ speed * std::cos(cAngle) , speed * std::sin(cAngle) });
+        new Fireball(m_owner, m_position, Vec2{ speed * std::cos(cAngle) , speed * std::sin(cAngle) });
     }
 
     destroy();

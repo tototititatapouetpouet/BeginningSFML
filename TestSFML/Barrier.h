@@ -5,7 +5,7 @@
 class Barrier : public IGameObject
 {
 public:
-    Barrier(Game& game, const AABB& bbox);
+    Barrier(IGameObjectContainer& game, const AABB& bbox);
 
     void handleInputs(const sf::Event& event) override;
     void render(sf::RenderWindow& window) override;

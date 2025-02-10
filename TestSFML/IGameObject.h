@@ -2,6 +2,8 @@
 
 #include "MyMath.h"
 
+#include <vector>
+
 namespace sf { class RenderWindow; }
 namespace sf { class Event; }
 
@@ -15,12 +17,34 @@ enum GameObjectType
   , BARRIER_TYPE = 3
   , PLAYERSHIP_TYPE = 4
   , CAPITAL_SHIP = 5
+  , TURRET_TYPE = 6
+};
+
+class IGameObject;
+
+class IGameObjectContainer
+{
+public:
+    void _addObject(IGameObject*);
+    void _removeObject(IGameObject*);
+    void _toBeRemoveObject(IGameObject*);
+    void _deferedAddObject(IGameObject*);
+    void _deferedAddObjects();
+    void _cleanObject();
+    ~IGameObjectContainer();
+
+    virtual Game& getGame() = 0;
+
+protected:
+    std::vector<IGameObject*> m_allGameObjects;
+    std::vector<IGameObject*> m_toBeRemovedGameObjects;
+    std::vector<IGameObject*> m_toBeAddedGameObjects;
 };
 
 class IGameObject
 {
 public:
-    IGameObject(Game& g);
+    IGameObject(IGameObjectContainer& owner);
     virtual ~IGameObject();
 
     virtual void handleInputs(const sf::Event& event) = 0;
@@ -29,7 +53,19 @@ public:
     virtual AABB getBoundingBox() const = 0;
     virtual GameObjectType gameObjectType() = 0;
     void destroy();
+    IGameObjectContainer& getOwner() { return m_owner; }
+    const IGameObjectContainer& getOwner() const { return m_owner; }
 
 protected:
-    Game& m_game;
+    IGameObjectContainer& m_owner;
+};
+
+class IGameObjectCompound : public IGameObject, public IGameObjectContainer
+{
+public:
+    IGameObjectCompound(IGameObjectContainer& owner);
+
+    void handleInputs(const sf::Event& event) override;
+    void update(float deltaTime) override;
+    void render(sf::RenderWindow& window) override;
 };

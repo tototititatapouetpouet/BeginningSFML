@@ -1,6 +1,8 @@
 #include "Barrier.h"
 
-Barrier::Barrier(Game& game, const AABB& bbox) : IGameObject(game), m_bbox(bbox)
+#include "Game.h"
+
+Barrier::Barrier(IGameObjectContainer& game, const AABB& bbox) : IGameObject(game), m_bbox(bbox)
 { }
 
 void Barrier::handleInputs(const sf::Event& event)

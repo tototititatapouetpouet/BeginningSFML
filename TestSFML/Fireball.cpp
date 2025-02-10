@@ -7,12 +7,12 @@ Vec2 getFireballSize()
     return { 16.f, 16.f };
 }
 
-Fireball::Fireball(Game& game, const Vec2& position, const Vec2& velocity)
+Fireball::Fireball(IGameObjectContainer& game, const Vec2& position, const Vec2& velocity)
     : IGameObject(game)
     , m_position(position)
     , m_velocity(velocity)
 {
-    m_sprite.setTexture(game.getTextureCache().getTexture("Fireball.bmp"));
+    m_sprite.setTexture(getOwner().getGame().getTextureCache().getTexture("Fireball.bmp"));
 }
 
 void Fireball::handleInputs(const sf::Event& event)

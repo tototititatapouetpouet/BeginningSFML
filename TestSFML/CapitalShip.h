@@ -4,12 +4,12 @@
 
 #include <SFML/Graphics.hpp>
 
-class Game;
+class IGameObjectContainer;
 
 class Turret : public IGameObject
 {
 public:
-    Turret(Game& game, const Vec2& position);
+    Turret(IGameObjectContainer& game, const Vec2& position);
 
     void handleInputs(const sf::Event& event) override;
     void update(float deltaTime) override;
@@ -23,10 +23,10 @@ private:
     Vec2 m_position;
 };
 
-class CapitalShip : public IGameObject
+class CapitalShip : public IGameObjectCompound
 {
 public:
-    CapitalShip(Game& game, const Vec2& position);
+    CapitalShip(IGameObjectContainer& game, const Vec2& position);
 
     void handleInputs(const sf::Event& event) override;
     void update(float deltaTime) override;
