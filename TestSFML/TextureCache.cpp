@@ -16,7 +16,7 @@ TextureCache::~TextureCache()
 std::string TextureCache::getAbsoluteFilepath(const std::string& filename)
 {
     std::filesystem::path execFilePath(m_execFilePath);
-    auto filepath = execFilePath.parent_path().parent_path().parent_path() / std::filesystem::path(filename);
+    auto filepath = execFilePath.parent_path().parent_path().parent_path() / "Resources" / std::filesystem::path(filename);
     return filepath.string();
 }
 
