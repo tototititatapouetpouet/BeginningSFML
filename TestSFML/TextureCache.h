@@ -8,7 +8,8 @@ namespace sf { class Texture; }
 class TextureCache
 {
 public:
-    sf::Texture& getTexture(const std::string& path);
+    TextureCache(const std::string& execFilePath);
+    sf::Texture& getTexture(const std::string& filename);
     ~TextureCache();
 
 private:
@@ -18,5 +19,8 @@ private:
         std::string path;
     };
 
+    std::string getAbsoluteFilepath(const std::string& filename);
+
     std::vector<TextureInfo> m_allTextureInfos;
+    std::string m_execFilePath;
 };

@@ -14,7 +14,9 @@
 constexpr int getWindowWidth() { return 1900; }
 constexpr int getWindowHeight() { return 1000; }
 
-Game::Game() : m_window(sf::VideoMode(getWindowWidth(), getWindowHeight()), "SFML works!")
+Game::Game(const std::string& execFilePath)
+    : m_window(sf::VideoMode(getWindowWidth(), getWindowHeight()), "SFML works!")
+    , m_textureCache(execFilePath)
 {
     m_window.setFramerateLimit(60);
 

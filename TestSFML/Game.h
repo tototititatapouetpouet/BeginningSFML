@@ -15,7 +15,7 @@ class Game
 public:
     friend class IGameObject;
 
-    Game();
+    Game(const std::string& execFilePath);
     ~Game();
 
     void handleInputs();

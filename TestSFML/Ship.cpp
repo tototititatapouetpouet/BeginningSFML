@@ -15,7 +15,7 @@ Ship::Ship(Game& game, const Vec2& position)
   , m_position(position)
   , m_isDead(false)
 {
-    m_sprite.setTexture(game.getTextureCache().getTexture("C:\\repoGC\\BeginningSFML\\Truc.bmp"));
+    m_sprite.setTexture(game.getTextureCache().getTexture("Truc.bmp"));
 }
 
 void Ship::handleInputs(const sf::Event& event)

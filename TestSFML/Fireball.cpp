@@ -12,7 +12,7 @@ Fireball::Fireball(Game& game, const Vec2& position, const Vec2& velocity)
     , m_position(position)
     , m_velocity(velocity)
 {
-    m_sprite.setTexture(game.getTextureCache().getTexture("C:\\repoGC\\BeginningSFML\\Fireball.bmp"));
+    m_sprite.setTexture(game.getTextureCache().getTexture("Fireball.bmp"));
 }
 
 void Fireball::handleInputs(const sf::Event& event)

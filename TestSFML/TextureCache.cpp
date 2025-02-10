@@ -2,14 +2,27 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <filesystem>
+
+TextureCache::TextureCache(const std::string& execFilePath) : m_execFilePath(execFilePath)
+{}
+
 TextureCache::~TextureCache()
 {
     for (auto& textureInfo : m_allTextureInfos)
         delete textureInfo.texture;
 }
 
-sf::Texture& TextureCache::getTexture(const std::string& path)
+std::string TextureCache::getAbsoluteFilepath(const std::string& filename)
 {
+    std::filesystem::path execFilePath(m_execFilePath);
+    auto filepath = execFilePath.parent_path().parent_path().parent_path() / std::filesystem::path(filename);
+    return filepath.string();
+}
+
+sf::Texture& TextureCache::getTexture(const std::string& filename)
+{
+    std::string path = getAbsoluteFilepath(filename);
     for (auto& textureInfo : m_allTextureInfos)
     {
         if (textureInfo.path == path)

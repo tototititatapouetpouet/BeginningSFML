@@ -28,7 +28,7 @@ PlayerShip::PlayerShip(Game& game, const Vec2& position)
     , m_isDead(false)
     , m_isAccelerating(false)
 {
-    m_sprite.setTexture(game.getTextureCache().getTexture("C:\\repoGC\\BeginningSFML\\PlayerShip.bmp"));
+    m_sprite.setTexture(game.getTextureCache().getTexture("PlayerShip.bmp"));
 }
 
 void PlayerShip::handleInputs(const sf::Event& event)
