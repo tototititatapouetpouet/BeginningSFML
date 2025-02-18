@@ -34,13 +34,7 @@ public:
     friend class IShape;
     ~ShapeContainer()
     {
-        /*
-        auto shapes = m_shapes;
-        for (auto& shape : shapes)
-            delete shape;
-            */
-
-        for (size_t shapeIdx = m_shapes.size() - 1; shapeIdx > 0; --shapeIdx)
+        for (std::make_signed_t<size_t> shapeIdx = m_shapes.size() - 1; shapeIdx >= 0; --shapeIdx)
             delete m_shapes[shapeIdx];
     }
 
@@ -78,6 +72,7 @@ int main()
 {
     ShapeContainer container;
 
+    /*
     auto cercleCarre = new CompoundShape(container);
     new Square(*cercleCarre);
     new Circle(*cercleCarre);
@@ -87,9 +82,31 @@ int main()
     new Circle(*cercleCercleCarre);
     new Circle(*cercleCercleCarre);
 
+    
+    auto bigNode = new CompoundShape(container);
+    for (int i = 0; i < 100000; ++i)
+        new Square(*bigNode);
+
     cercleCarre->draw();
 
     cercleCercleCarre->draw();
 
-    delete cercleCercleCarre;
+
+
+    //delete cercleCercleCarre;
+
+    */
+
+    CompoundShape* c1 = new CompoundShape(container);
+    CompoundShape* c2 = new CompoundShape(*c1);
+    CompoundShape* c3 = new CompoundShape(*c2);
+    CompoundShape* c4 = new CompoundShape(*c3);
+    CompoundShape* c5 = new CompoundShape(*c4);
+
+    ShapeContainer* quelquechose = &container;
+    for (int i = 0; i < 100000; ++i)
+    {
+        quelquechose = new CompoundShape(*quelquechose);
+    }
+
 }
