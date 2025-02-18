@@ -1,23 +1,26 @@
 #include "Tree.h"
 
-IComponentNode::IComponentNode(CompositeNode* parent)
-    : m_parent(nullptr)
+namespace BT
 {
-    setParent(parent);
-}
+    IComponentNode::IComponentNode(CompositeNode* parent)
+        : m_parent(nullptr)
+    {
+        setParent(parent);
+    }
 
-IComponentNode::~IComponentNode()
-{
-    setParent(nullptr);
-}
+    IComponentNode::~IComponentNode()
+    {
+        setParent(nullptr);
+    }
 
-void IComponentNode::setParent(CompositeNode* newParent)
-{
-    if (m_parent)
-        m_parent->remove(this);
+    void IComponentNode::setParent(CompositeNode* newParent)
+    {
+        if (m_parent)
+            m_parent->remove(this);
 
-    m_parent = newParent;
+        m_parent = newParent;
 
-    if (m_parent)
-        m_parent->add(this);
+        if (m_parent)
+            m_parent->add(this);
+    }
 }

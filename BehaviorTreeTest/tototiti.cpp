@@ -1,23 +1,31 @@
 #include "Tree.h"
 
+#include <conio.h>
+
+void testBourrin(BT::CompositeNode* node)
+{
+    BT::Status status = BT::Running;
+    while (status == BT::Running)
+    {
+        status = node->tick();
+        ::_getch();
+    }
+}
+
 int main()
 {
-    CompositeNode cNode;
+    Enemy toto;
 
-    auto* grosNode1 = new CompositeNode(&cNode);
-    auto* node1 = new LeafNode{ grosNode1 };
-    auto* node2 = new LeafNode{ grosNode1 };
+    BT::Sequence behavior;
 
-    auto* grosNode2 = new CompositeNode(&cNode);
-    auto* node12 = new LeafNode{ grosNode2 };
-    auto* node22 = new LeafNode{ grosNode2 };
+    auto* killAnEnemy = new BT::Retry(&behavior);
+    auto* victoryDance = new BT::VictoryDance(&behavior);
 
-    cNode.display();
+    new BT::ReloadGunIfEmpty(killAnEnemy);
+    new BT::Fire(killAnEnemy, &toto);
+    new BT::IsEnemyDead(killAnEnemy, &toto);
 
-    CompositeNode someRoot;
-    grosNode2->setParent(&someRoot);
-
-    std::cout << "dssdfufsd";
+    testBourrin(&behavior);
 }
 
 
