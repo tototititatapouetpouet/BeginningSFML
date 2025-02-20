@@ -208,43 +208,6 @@ namespace BT
         }
     };
 
-    /*
-    class Sequence : public CompositeNode
-    {
-    public:
-        Sequence(CompositeNode* parent = nullptr) : CompositeNode(parent), m_nextNodeToTick(0)
-        {
-        }
-
-        virtual Status tick()
-        {
-            Status childStatus = getChildren()[m_nextNodeToTick]->tick();
-
-            if (childStatus == Failed)
-            {
-                m_nextNodeToTick = 0;
-                return Failed;
-            }
-
-            if (childStatus == Running)
-                return Running;
-
-            m_nextNodeToTick++;
-            if (m_nextNodeToTick >= getChildren().size())
-            {
-                m_nextNodeToTick = 0;
-                return Success;
-            }
-
-            return Running;
-
-        }
-
-    private:
-        size_t m_nextNodeToTick;
-    };
-    */
-
     class Sequence : public ControlNode
     {
     public:
@@ -262,41 +225,6 @@ namespace BT
         }
     };
 
-    /*
-    class Retry : public CompositeNode
-    {
-    public:
-        Retry(CompositeNode* parent = nullptr) : CompositeNode(parent), m_nextNodeToTick(0)
-        {
-        }
-
-        virtual Status tick()
-        {
-            Status childStatus = getChildren()[m_nextNodeToTick]->tick();
-
-            if (childStatus == Failed)
-            {
-                m_nextNodeToTick = 0;
-                return Running;
-            }
-
-            if (childStatus == Running)
-                return Running;
-
-            m_nextNodeToTick++;
-            if (m_nextNodeToTick >= getChildren().size())
-            {
-                m_nextNodeToTick = 0;
-                return Success;
-            }
-
-            return Running;
-        }
-
-    private:
-        size_t m_nextNodeToTick;
-    };
-    */
     class ReloadGunIfEmpty : public ActionNode
     {
     public:
