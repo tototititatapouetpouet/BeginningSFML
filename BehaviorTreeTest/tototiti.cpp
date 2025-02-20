@@ -18,7 +18,7 @@ int main()
 
     BT::Sequence behavior;
 
-    auto* nTimes = new BT::DoNTime(&behavior, 3);
+    auto* nTimes = new BT::DoUntilFailure(&behavior);
 
     auto* findEnemy = new BT::FindEnemy(nTimes, &game.npc);
     auto* killAnEnemy = new BT::Retry(nTimes);

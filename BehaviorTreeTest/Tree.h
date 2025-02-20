@@ -12,9 +12,13 @@ struct Enemy
     int PV = 3;
 };
 
+namespace {
+    int NPC_MAX_AMMO() { return 5; }
+}
+
 struct NPC
 {
-    NPC(Game& game) : m_game(game), m_currentTarget(nullptr)
+    NPC(Game& game) : m_game(game), m_currentTarget(nullptr), m_ammo(NPC_MAX_AMMO())
     { }
 
     void findValidTarget();
@@ -35,9 +39,20 @@ struct NPC
         return true;
     }
 
+    bool isClipEmpty() const
+    {
+        return m_ammo <= 0;
+    }
+
+    void reloadGun()
+    {
+        m_ammo = NPC_MAX_AMMO();
+    }
+
 private:
     Enemy* m_currentTarget;
     Game& m_game;
+    int m_ammo;
 };
 
 struct Game
@@ -277,11 +292,44 @@ namespace BT
         int m_N;
     };
 
+    struct RedoStrategy : public IStrategy<Success>
+    {
+        virtual Status execute(ControlNode* node)
+        {
+            if (node->isLastChildren())
+            {
+                node->reset();
+                return Running;
+            }
+
+            node->incrementChildrenIndex();
+            return Running;
+        }
+    };
+
+    struct FailAsSuccessStrategy : public IStrategy<Failed>
+    {
+        virtual Status execute(ControlNode* node)
+        {
+            node->reset();
+            return Success;
+        }
+    };
+
     class DoNTime : public ControlNode
     {
     public:
         DoNTime(CompositeNode* parent = nullptr, int N = 3) :
             ControlNode(parent, new FailedStrategy, new RunningStrategy, new RedoNTimeStrategy{N})
+        {
+        }
+    };
+
+    class DoUntilFailure : public ControlNode
+    {
+    public:
+        DoUntilFailure(CompositeNode* parent = nullptr) :
+            ControlNode(parent, new FailAsSuccessStrategy, new RunningStrategy, new RedoStrategy)
         {
         }
     };
@@ -303,15 +351,32 @@ namespace BT
         }
     };
 
-    class ReloadGunIfEmpty : public ActionNode
+    class IsGunEmpty : public ActionNode
     {
     public:
-        ReloadGunIfEmpty(CompositeNode* parent) : ActionNode(parent)
+        IsGunEmpty(CompositeNode* parent, NPC* npc) : ActionNode(parent), m_npc(npc)
         {
         }
 
         Status tick() override
         {
+            if 
+        }
+
+    private:
+        NPC* m_npc;
+    };
+
+    class ReloadGun : public ActionNode
+    {
+    public:
+        ReloadGun(CompositeNode* parent, NPC* npc) : ActionNode(parent), m_npc(npc)
+        {
+        }
+
+        Status tick() override
+        {
+            m_npc->reloadGun();
             m_delay--;
             if (m_delay >= 1)
                 return Running;
@@ -322,6 +387,7 @@ namespace BT
 
     private:
         int m_delay = 2;
+        NPC* m_npc;
     };
 
     class Fire : public ActionNode
