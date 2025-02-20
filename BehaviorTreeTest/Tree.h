@@ -2,12 +2,53 @@
 
 #include <iostream>
 #include <vector>
+#include <array>
 #include <type_traits>
+
+struct Game;
 
 struct Enemy
 {
     int PV = 3;
 };
+
+struct NPC
+{
+    NPC(Game& game) : m_game(game), m_currentTarget(nullptr)
+    { }
+
+    void findValidTarget();
+
+    Enemy* getCurrentTarget()
+    {
+        return m_currentTarget;
+    }
+
+    bool isCurrentTargetValid() const
+    {
+        if (m_currentTarget == nullptr)
+            return false;
+
+        if (m_currentTarget->PV <= 0)
+            return false;
+
+        return true;
+    }
+
+private:
+    Enemy* m_currentTarget;
+    Game& m_game;
+};
+
+struct Game
+{
+    Game() : npc(*this)
+    {}
+
+    NPC npc;
+    std::array<Enemy, 5> enemies;
+};
+
 
 namespace BT
 {
@@ -168,6 +209,8 @@ namespace BT
         IStrategy<Success>* m_successStrategy;
     };
 
+
+
     struct FailedStrategy : public IStrategy<Failed>
     {
         virtual Status execute(ControlNode* node)
@@ -206,6 +249,40 @@ namespace BT
             
             node->incrementChildrenIndex();
             return Running;
+        }
+    };
+
+    struct RedoNTimeStrategy : public IStrategy<Success>
+    {
+        RedoNTimeStrategy(int N) : m_N(N)
+        {}
+
+        virtual Status execute(ControlNode* node)
+        {
+            if (node->isLastChildren())
+            {
+                node->reset();
+                m_N--;
+                if (m_N == 0)
+                    return Success;
+
+                return Running;
+            }
+
+            node->incrementChildrenIndex();
+            return Running;
+        }
+
+    private:
+        int m_N;
+    };
+
+    class DoNTime : public ControlNode
+    {
+    public:
+        DoNTime(CompositeNode* parent = nullptr, int N = 3) :
+            ControlNode(parent, new FailedStrategy, new RunningStrategy, new RedoNTimeStrategy{N})
+        {
         }
     };
 
@@ -250,31 +327,34 @@ namespace BT
     class Fire : public ActionNode
     {
     public:
-        Fire(CompositeNode* parent, Enemy* enemy) : ActionNode(parent), m_enemy(enemy)
+        Fire(CompositeNode* parent, NPC* npc) : ActionNode(parent), m_npc(npc)
         {
         }
 
         Status tick() override
         {
+            if (!m_npc->isCurrentTargetValid())
+                return Failed;
+
             std::cout << "Fire the gun!" << std::endl;
-            m_enemy->PV--;
+            m_npc->getCurrentTarget()->PV--;
             return Success;
         }
 
     private:
-        Enemy* m_enemy;
+        NPC* m_npc;
     };
 
     class IsEnemyDead : public ActionNode
     {
     public:
-        IsEnemyDead(CompositeNode* parent, Enemy* enemy) : ActionNode(parent), m_enemy(enemy)
+        IsEnemyDead(CompositeNode* parent, NPC* npc) : ActionNode(parent), m_npc(npc)
         {
         }
 
         Status tick() override
         {
-            if (m_enemy->PV <= 0)
+            if (m_npc->getCurrentTarget()->PV <= 0)
             {
                 std::cout << "Enemy killed!" << std::endl;
                 return Success;
@@ -284,8 +364,31 @@ namespace BT
         }
 
     private:
-        int m_PV = 3;
-        Enemy* m_enemy;
+        NPC* m_npc;
+    };
+
+    class FindEnemy : public ActionNode
+    {
+    public:
+        FindEnemy(CompositeNode* parent, NPC* npc) : ActionNode(parent), m_npc(npc)
+        {
+        }
+
+        Status tick() override
+        {
+            m_npc->findValidTarget();
+            if (m_npc->getCurrentTarget() == nullptr)
+            {
+                std::cout << "No enemy left!" << std::endl;
+                return Failed;
+            }
+
+            std::cout << "Enemy spotted!" << std::endl;
+            return Success;
+        }
+
+    private:
+        NPC* m_npc;
     };
 
     class VictoryDance : public ActionNode

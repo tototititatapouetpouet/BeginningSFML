@@ -14,16 +14,20 @@ void testBourrin(BT::CompositeNode* node)
 
 int main()
 {
-    Enemy toto;
+    Game game;
 
     BT::Sequence behavior;
 
-    auto* killAnEnemy = new BT::Retry(&behavior);
+    auto* nTimes = new BT::DoNTime(&behavior, 3);
+
+    auto* findEnemy = new BT::FindEnemy(nTimes, &game.npc);
+    auto* killAnEnemy = new BT::Retry(nTimes);
+
     auto* victoryDance = new BT::VictoryDance(&behavior);
 
     new BT::ReloadGunIfEmpty(killAnEnemy);
-    new BT::Fire(killAnEnemy, &toto);
-    new BT::IsEnemyDead(killAnEnemy, &toto);
+    new BT::Fire(killAnEnemy, &game.npc);
+    new BT::IsEnemyDead(killAnEnemy, &game.npc);
 
     testBourrin(&behavior);
 }
