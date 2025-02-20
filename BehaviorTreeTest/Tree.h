@@ -103,6 +103,7 @@ namespace BT
     
     class ControlNode;
 
+    template<Status STATUS>
     class IStrategy
     {
     public:
@@ -113,7 +114,7 @@ namespace BT
     class ControlNode : public CompositeNode
     {
     public:
-        ControlNode(CompositeNode* parent, IStrategy* failedStrategy, IStrategy* runningStrategy, IStrategy* successStrategy)
+        ControlNode(CompositeNode* parent, IStrategy<Failed>* failedStrategy, IStrategy<Running>* runningStrategy, IStrategy<Success>* successStrategy)
             : CompositeNode(parent)
             , m_nextNodeToTick(0)
             , m_failedStrategy(failedStrategy)
@@ -162,12 +163,12 @@ namespace BT
 
     private:
         size_t m_nextNodeToTick;
-        IStrategy* m_failedStrategy;
-        IStrategy* m_runningStrategy;
-        IStrategy* m_successStrategy;
+        IStrategy<Failed>* m_failedStrategy;
+        IStrategy<Running>* m_runningStrategy;
+        IStrategy<Success>* m_successStrategy;
     };
 
-    struct FailedStrategy : public IStrategy
+    struct FailedStrategy : public IStrategy<Failed>
     {
         virtual Status execute(ControlNode* node)
         {
@@ -176,7 +177,7 @@ namespace BT
         }
     };
 
-    struct RetryStrategy : public IStrategy
+    struct RetryStrategy : public IStrategy<Failed>
     {
         virtual Status execute(ControlNode* node)
         {
@@ -185,7 +186,7 @@ namespace BT
         }
     };
 
-    struct RunningStrategy : public IStrategy
+    struct RunningStrategy : public IStrategy<Running>
     {
         virtual Status execute(ControlNode* node)
         {
@@ -193,7 +194,7 @@ namespace BT
         }
     };
 
-    struct SuccessStrategy : public IStrategy
+    struct SuccessStrategy : public IStrategy<Success>
     {
         virtual Status execute(ControlNode* node)
         {
