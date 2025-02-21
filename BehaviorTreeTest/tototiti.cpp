@@ -2,7 +2,7 @@
 
 #include <conio.h>
 
-void testBourrin(BT::CompositeNode* node)
+void testBourrin(BT::ICompositeNode* node)
 {
     BT::Status status = BT::Running;
     while (status == BT::Running)

@@ -86,7 +86,7 @@ struct Game
 namespace BT
 {
 
-    class CompositeNode;
+    class ICompositeNode;
 
     enum Status
     {
@@ -99,12 +99,12 @@ namespace BT
 
     struct IComponentNode
     {
-        IComponentNode(CompositeNode* parent);
+        IComponentNode(ICompositeNode* parent);
 
-        void setParent(CompositeNode* newParent);
+        void setParent(ICompositeNode* newParent);
 
-        CompositeNode* getParent();
-        const CompositeNode* getParent() const;
+        ICompositeNode* getParent();
+        const ICompositeNode* getParent() const;
 
         virtual ~IComponentNode();
 
@@ -119,12 +119,12 @@ namespace BT
         const RootNode* getRootNode() const;
 
     protected:
-        CompositeNode* m_parent;
+        ICompositeNode* m_parent;
     };
 
-    struct ActionNode : IComponentNode
+    struct IActionNode : IComponentNode
     {
-        ActionNode(CompositeNode* node)
+        IActionNode(ICompositeNode* node)
             : IComponentNode(node)
         {
         }
@@ -135,17 +135,17 @@ namespace BT
         }
     };
 
-    class CompositeNode : public IComponentNode
+    class ICompositeNode : public IComponentNode
     {
     public:
         friend IComponentNode;
 
-        CompositeNode(CompositeNode* node)
+        ICompositeNode(ICompositeNode* node)
             : IComponentNode(node)
         {
         }
 
-        ~CompositeNode()
+        ~ICompositeNode()
         {
             for(std::make_signed_t<size_t> idx = m_children.size() - 1 ; idx >= 0 ; --idx)
             {
@@ -185,11 +185,11 @@ namespace BT
         std::vector<IComponentNode*> m_children;
     };
     
-    class SingleChildNode : public CompositeNode
+    class ISingleChildNode : public ICompositeNode
     {
     public:
-        SingleChildNode(CompositeNode* node)
-            : CompositeNode(node)
+        ISingleChildNode(ICompositeNode* node)
+            : ICompositeNode(node)
         {
         }
 
@@ -207,17 +207,17 @@ namespace BT
             if (getChildren().size() >= 1)
                 throw;
 
-            CompositeNode::add(node);
+            ICompositeNode::add(node);
         }
     };
 
-    using DecoratorNode = SingleChildNode;
+    using IDecoratorNode = ISingleChildNode;
 
 
-    class RootNode : public SingleChildNode
+    class RootNode : public ISingleChildNode
     {
     public:
-        RootNode(NPC* npc) : SingleChildNode(nullptr), m_npc(npc)
+        RootNode(NPC* npc) : ISingleChildNode(nullptr), m_npc(npc)
         {
         }
 
@@ -238,11 +238,11 @@ namespace BT
 
 
 
-    class IConditionalNode : public DecoratorNode
+    class IConditionalNode : public IDecoratorNode
     {
     public:
-        IConditionalNode(CompositeNode* node)
-            : DecoratorNode(node)
+        IConditionalNode(ICompositeNode* node)
+            : IDecoratorNode(node)
             , m_isTickingChildNode(false)
         {
         }
@@ -283,7 +283,7 @@ namespace BT
     class IfGunEmpty : public IConditionalNode
     {
     public:
-        IfGunEmpty(CompositeNode* node)
+        IfGunEmpty(ICompositeNode* node)
             : IConditionalNode(node)
         {
         }
@@ -304,11 +304,11 @@ namespace BT
         virtual Status execute(ControlNode* node) = 0;
     };
 
-    class ControlNode : public CompositeNode
+    class ControlNode : public ICompositeNode
     {
     public:
-        ControlNode(CompositeNode* parent, IStrategy<Failed>* failedStrategy, IStrategy<Running>* runningStrategy, IStrategy<Success>* successStrategy)
-            : CompositeNode(parent)
+        ControlNode(ICompositeNode* parent, IStrategy<Failed>* failedStrategy, IStrategy<Running>* runningStrategy, IStrategy<Success>* successStrategy)
+            : ICompositeNode(parent)
             , m_nextNodeToTick(0)
             , m_failedStrategy(failedStrategy)
             , m_runningStrategy(runningStrategy)
@@ -456,7 +456,7 @@ namespace BT
     class DoNTime : public ControlNode
     {
     public:
-        DoNTime(CompositeNode* parent, int N = 3) :
+        DoNTime(ICompositeNode* parent, int N = 3) :
             ControlNode(parent, new FailedStrategy, new RunningStrategy, new RedoNTimeStrategy{N})
         {
         }
@@ -465,7 +465,7 @@ namespace BT
     class DoUntilFailure : public ControlNode
     {
     public:
-        DoUntilFailure(CompositeNode* parent) :
+        DoUntilFailure(ICompositeNode* parent) :
             ControlNode(parent, new FailAsSuccessStrategy, new RunningStrategy, new RedoStrategy)
         {
         }
@@ -474,7 +474,7 @@ namespace BT
     class Sequence : public ControlNode
     {
     public:
-        Sequence(CompositeNode* parent) :
+        Sequence(ICompositeNode* parent) :
             ControlNode(parent, new FailedStrategy, new RunningStrategy, new SuccessStrategy)
         {}
     };
@@ -482,16 +482,16 @@ namespace BT
     class Retry : public ControlNode
     {
     public:
-        Retry(CompositeNode* parent) :
+        Retry(ICompositeNode* parent) :
             ControlNode(parent, new RetryStrategy, new RunningStrategy, new SuccessStrategy)
         {
         }
     };
 
-    class ReloadGun : public ActionNode
+    class ReloadGun : public IActionNode
     {
     public:
-        ReloadGun(CompositeNode* parent) : ActionNode(parent)
+        ReloadGun(ICompositeNode* parent) : IActionNode(parent)
         {
         }
 
@@ -514,10 +514,10 @@ namespace BT
         int m_delay = 2;
     };
 
-    class Fire : public ActionNode
+    class Fire : public IActionNode
     {
     public:
-        Fire(CompositeNode* parent) : ActionNode(parent)
+        Fire(ICompositeNode* parent) : IActionNode(parent)
         {
         }
 
@@ -533,10 +533,10 @@ namespace BT
         }
     };
 
-    class IsEnemyDead : public ActionNode
+    class IsEnemyDead : public IActionNode
     {
     public:
-        IsEnemyDead(CompositeNode* parent) : ActionNode(parent)
+        IsEnemyDead(ICompositeNode* parent) : IActionNode(parent)
         {
         }
 
@@ -552,10 +552,10 @@ namespace BT
         }
     };
 
-    class FindEnemy : public ActionNode
+    class FindEnemy : public IActionNode
     {
     public:
-        FindEnemy(CompositeNode* parent) : ActionNode(parent)
+        FindEnemy(ICompositeNode* parent) : IActionNode(parent)
         {
         }
 
@@ -573,10 +573,10 @@ namespace BT
         }
     };
 
-    class VictoryDance : public ActionNode
+    class VictoryDance : public IActionNode
     {
     public:
-        VictoryDance(CompositeNode* parent) : ActionNode(parent)
+        VictoryDance(ICompositeNode* parent) : IActionNode(parent)
         {
         }
 

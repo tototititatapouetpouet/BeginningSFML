@@ -2,7 +2,7 @@
 
 namespace BT
 {
-    IComponentNode::IComponentNode(CompositeNode* parent)
+    IComponentNode::IComponentNode(ICompositeNode* parent)
         : m_parent(nullptr)
     {
         setParent(parent);
@@ -13,7 +13,7 @@ namespace BT
         setParent(nullptr);
     }
 
-    void IComponentNode::setParent(CompositeNode* newParent)
+    void IComponentNode::setParent(ICompositeNode* newParent)
     {
         if (m_parent)
             m_parent->remove(this);
@@ -24,8 +24,8 @@ namespace BT
             m_parent->add(this);
     }
 
-    CompositeNode* IComponentNode::getParent() { return m_parent; }
-    const CompositeNode* IComponentNode::getParent() const { return m_parent; }
+    ICompositeNode* IComponentNode::getParent() { return m_parent; }
+    const ICompositeNode* IComponentNode::getParent() const { return m_parent; }
 
     NPC* IComponentNode::getNpc()
     {
