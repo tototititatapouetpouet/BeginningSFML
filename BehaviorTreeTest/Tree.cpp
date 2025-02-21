@@ -27,14 +27,14 @@ namespace BT
     ICompositeNode* IComponentNode::getParent() { return m_parent; }
     const ICompositeNode* IComponentNode::getParent() const { return m_parent; }
 
-    NPC* IComponentNode::getNpc()
+    IGameObject* IComponentNode::getGameObject()
     {
-        return getRootNode()->getNpc();
+        return getRootNode()->getGameObject();
     }
 
-    const NPC* IComponentNode::getNpc() const
+    const IGameObject* IComponentNode::getGameObject() const
     {
-        return getRootNode()->getNpc();
+        return getRootNode()->getGameObject();
     }
 
     RootNode* IComponentNode::getRootNode()

@@ -43,6 +43,24 @@ void NPC::findValidTarget()
 }
 
 
+
+
+
+Enemy::Enemy() : m_rootNode(this)
+{
+
+}
+
+void Enemy::update()
+{
+    m_rootNode.tick();
+}
+
+
+
+
+
+
 #include <conio.h>
 
 void Game::exec()

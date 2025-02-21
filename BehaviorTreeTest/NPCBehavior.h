@@ -5,11 +5,22 @@
 
 namespace BT
 {
-    class IfGunEmpty : public IConditionalNode
+    class GetNpc
+    {
+    public:
+        GetNpc(IGameObject* go) : m_go(go) {}
+        NPC* getNpc() { return static_cast<NPC*>(m_go); }
+        const NPC* getNpc() const { return static_cast<NPC*>(m_go); }
+
+    private:
+        IGameObject* m_go;
+    };
+
+    class IfGunEmpty : public IConditionalNode, public GetNpc
     {
     public:
         IfGunEmpty(ICompositeNode* node)
-            : IConditionalNode(node)
+            : IConditionalNode(node), GetNpc(getGameObject())
         {
         }
 
@@ -19,10 +30,10 @@ namespace BT
         }
     };
 
-    class ReloadGun : public IActionNode
+    class ReloadGun : public IActionNode, public GetNpc
     {
     public:
-        ReloadGun(ICompositeNode* parent) : IActionNode(parent)
+        ReloadGun(ICompositeNode* parent) : IActionNode(parent), GetNpc(getGameObject())
         {
         }
 
@@ -45,10 +56,10 @@ namespace BT
         int m_delay = 2;
     };
 
-    class Fire : public IActionNode
+    class Fire : public IActionNode, public GetNpc
     {
     public:
-        Fire(ICompositeNode* parent) : IActionNode(parent)
+        Fire(ICompositeNode* parent) : IActionNode(parent), GetNpc(getGameObject())
         {
         }
 
@@ -64,10 +75,10 @@ namespace BT
         }
     };
 
-    class IsEnemyDead : public IActionNode
+    class IsEnemyDead : public IActionNode, public GetNpc
     {
     public:
-        IsEnemyDead(ICompositeNode* parent) : IActionNode(parent)
+        IsEnemyDead(ICompositeNode* parent) : IActionNode(parent), GetNpc(getGameObject())
         {
         }
 
@@ -83,10 +94,10 @@ namespace BT
         }
     };
 
-    class FindEnemy : public IActionNode
+    class FindEnemy : public IActionNode, public GetNpc
     {
     public:
-        FindEnemy(ICompositeNode* parent) : IActionNode(parent)
+        FindEnemy(ICompositeNode* parent) : IActionNode(parent), GetNpc(getGameObject())
         {
         }
 
@@ -104,10 +115,10 @@ namespace BT
         }
     };
 
-    class VictoryDance : public IActionNode
+    class VictoryDance : public IActionNode, public GetNpc
     {
     public:
-        VictoryDance(ICompositeNode* parent) : IActionNode(parent)
+        VictoryDance(ICompositeNode* parent) : IActionNode(parent), GetNpc(getGameObject())
         {
         }
 

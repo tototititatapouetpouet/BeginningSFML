@@ -8,25 +8,33 @@
 
 struct Game;
 
-class GameObject
+class IGameObject
 {
+    virtual void update() = 0;
 };
 
-struct Enemy : public GameObject
+struct Enemy : public IGameObject
 {
+    Enemy();
+
     int PV = 3;
+
+    void update() override;
+
+private:
+    BT::RootNode m_rootNode;
 };
 
 namespace {
     int NPC_MAX_AMMO() { return 5; }
 }
 
-class NPC : public GameObject
+class NPC : public IGameObject
 {
 public:
     NPC(Game& game);
 
-    void update();
+    void update() override;
 
     void findValidTarget();
 

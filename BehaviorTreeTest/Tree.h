@@ -5,7 +5,7 @@
 #include <array>
 #include <type_traits>
 
-class NPC;
+class IGameObject;
 
 namespace BT
 {
@@ -35,8 +35,8 @@ namespace BT
 
         virtual Status tick() = 0;
 
-        NPC* getNpc();
-        const NPC* getNpc() const;
+        IGameObject* getGameObject();
+        const IGameObject* getGameObject() const;
 
         RootNode* getRootNode();
         const RootNode* getRootNode() const;
@@ -140,12 +140,12 @@ namespace BT
     class RootNode : public ISingleChildNode
     {
     public:
-        RootNode(NPC* npc) : ISingleChildNode(nullptr), m_npc(npc)
+        RootNode(IGameObject* npc) : ISingleChildNode(nullptr), m_gameObject(npc)
         {
         }
 
-        NPC* getNpc() { return m_npc; }
-        const NPC* getNpc() const { return m_npc; }
+        IGameObject* getGameObject() { return m_gameObject; }
+        const IGameObject* getGameObject() const { return m_gameObject; }
 
         Status tick() override
         {
@@ -156,7 +156,7 @@ namespace BT
         }
 
     private:
-        NPC* m_npc;
+        IGameObject* m_gameObject;
     };
 
 
