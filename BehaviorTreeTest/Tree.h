@@ -396,4 +396,17 @@ namespace BT
         {
         }
     };
+
+    template<typename GameObjectType, typename NodeType>
+    class BehaviorNodeDecorator : public NodeType
+    {
+    public:
+        BehaviorNodeDecorator(ICompositeNode* parent) : NodeType(parent)
+        {
+        }
+
+        GameObjectType* getGameObject() { return static_cast<GameObjectType*>(NodeType::getGameObject()); }
+        const GameObjectType* getGameObject() const { return static_cast<GameObjectType*>(NodeType::getGameObject()); }
+    };
+
 }

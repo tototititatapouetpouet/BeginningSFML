@@ -5,41 +5,30 @@
 
 namespace BT
 {
-    class GetNpc
-    {
-    public:
-        GetNpc(IGameObject* go) : m_go(go) {}
-        NPC* getNpc() { return static_cast<NPC*>(m_go); }
-        const NPC* getNpc() const { return static_cast<NPC*>(m_go); }
-
-    private:
-        IGameObject* m_go;
-    };
-
-    class IfGunEmpty : public IConditionalNode, public GetNpc
+    class IfGunEmpty : public BehaviorNodeDecorator<NPC, IConditionalNode>
     {
     public:
         IfGunEmpty(ICompositeNode* node)
-            : IConditionalNode(node), GetNpc(getGameObject())
+            : BehaviorNodeDecorator<NPC, IConditionalNode>(node)
         {
         }
 
         bool condition()
         {
-            return getNpc()->isClipEmpty();
+            return getGameObject()->isClipEmpty();
         }
     };
 
-    class ReloadGun : public IActionNode, public GetNpc
+    class ReloadGun : public BehaviorNodeDecorator<NPC, IActionNode>
     {
     public:
-        ReloadGun(ICompositeNode* parent) : IActionNode(parent), GetNpc(getGameObject())
+        ReloadGun(ICompositeNode* parent) : BehaviorNodeDecorator<NPC, IActionNode>(parent)
         {
         }
 
         Status tick() override
         {
-            getNpc()->reloadGun();
+            getGameObject()->reloadGun();
             m_delay--;
             if (m_delay >= 1)
             {
@@ -56,35 +45,35 @@ namespace BT
         int m_delay = 2;
     };
 
-    class Fire : public IActionNode, public GetNpc
+    class Fire : public BehaviorNodeDecorator<NPC, IActionNode>
     {
     public:
-        Fire(ICompositeNode* parent) : IActionNode(parent), GetNpc(getGameObject())
+        Fire(ICompositeNode* parent) : BehaviorNodeDecorator<NPC, IActionNode>(parent)
         {
         }
 
         Status tick() override
         {
-            if (!getNpc()->isCurrentTargetValid())
+            if (!getGameObject()->isCurrentTargetValid())
                 return Failed;
 
-            if (getNpc()->fire())
+            if (getGameObject()->fire())
                 return Success;
 
             return Failed;
         }
     };
 
-    class IsEnemyDead : public IActionNode, public GetNpc
+    class IsEnemyDead : public BehaviorNodeDecorator<NPC, IActionNode>
     {
     public:
-        IsEnemyDead(ICompositeNode* parent) : IActionNode(parent), GetNpc(getGameObject())
+        IsEnemyDead(ICompositeNode* parent) : BehaviorNodeDecorator<NPC, IActionNode>(parent)
         {
         }
 
         Status tick() override
         {
-            if (getNpc()->getCurrentTarget()->PV <= 0)
+            if (getGameObject()->getCurrentTarget()->PV <= 0)
             {
                 std::cout << "Enemy killed!" << std::endl;
                 return Success;
@@ -94,17 +83,17 @@ namespace BT
         }
     };
 
-    class FindEnemy : public IActionNode, public GetNpc
+    class FindEnemy : public BehaviorNodeDecorator<NPC, IActionNode>
     {
     public:
-        FindEnemy(ICompositeNode* parent) : IActionNode(parent), GetNpc(getGameObject())
+        FindEnemy(ICompositeNode* parent) : BehaviorNodeDecorator<NPC, IActionNode>(parent)
         {
         }
 
         Status tick() override
         {
-            getNpc()->findValidTarget();
-            if (getNpc()->getCurrentTarget() == nullptr)
+            getGameObject()->findValidTarget();
+            if (getGameObject()->getCurrentTarget() == nullptr)
             {
                 std::cout << "No enemy left!" << std::endl;
                 return Failed;
@@ -115,10 +104,10 @@ namespace BT
         }
     };
 
-    class VictoryDance : public IActionNode, public GetNpc
+    class VictoryDance : public BehaviorNodeDecorator<NPC, IActionNode>
     {
     public:
-        VictoryDance(ICompositeNode* parent) : IActionNode(parent), GetNpc(getGameObject())
+        VictoryDance(ICompositeNode* parent) : BehaviorNodeDecorator<NPC, IActionNode>(parent)
         {
         }
 
