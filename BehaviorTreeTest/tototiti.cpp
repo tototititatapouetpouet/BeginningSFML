@@ -18,6 +18,10 @@ int main()
 
     BT::Sequence behavior;
 
+
+    auto* decorator = new BT::DecoratorNode(&behavior);
+    new BT::Fire(decorator, &game.npc);
+
     auto* nTimes = new BT::DoUntilFailure(&behavior);
 
     auto* findEnemy = new BT::FindEnemy(nTimes, &game.npc);
@@ -25,7 +29,7 @@ int main()
 
     auto* victoryDance = new BT::VictoryDance(&behavior);
 
-    new BT::ReloadGunIfEmpty(killAnEnemy);
+    //new BT::ReloadGunIfEmpty(killAnEnemy);
     new BT::Fire(killAnEnemy, &game.npc);
     new BT::IsEnemyDead(killAnEnemy, &game.npc);
 

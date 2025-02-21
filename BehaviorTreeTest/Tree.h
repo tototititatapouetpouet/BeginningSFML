@@ -137,8 +137,8 @@ namespace BT
             return m_children;
         }
 
-    private:
-        void add(IComponentNode* node)
+    protected:
+        virtual void add(IComponentNode* node)
         {
             m_children.push_back(node);
         }
@@ -154,9 +154,26 @@ namespace BT
 
     private:
         std::vector<IComponentNode*> m_children;
-
     };
     
+    class DecoratorNode : public CompositeNode
+    {
+    public:
+        DecoratorNode(CompositeNode* node = nullptr)
+            : CompositeNode(node)
+        {
+        }
+
+    private:
+        void add(IComponentNode* node) override
+        {
+            if (getChildren().size() >= 1)
+                throw;
+
+            CompositeNode::add(node);
+        }
+    };
+
     class ControlNode;
 
     template<Status STATUS>
@@ -351,6 +368,7 @@ namespace BT
         }
     };
 
+    /*
     class IsGunEmpty : public ActionNode
     {
     public:
@@ -366,6 +384,7 @@ namespace BT
     private:
         NPC* m_npc;
     };
+    */
 
     class ReloadGun : public ActionNode
     {
