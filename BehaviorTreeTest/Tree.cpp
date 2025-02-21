@@ -23,6 +23,32 @@ namespace BT
         if (m_parent)
             m_parent->add(this);
     }
+
+    CompositeNode* IComponentNode::getParent() { return m_parent; }
+    const CompositeNode* IComponentNode::getParent() const { return m_parent; }
+
+    NPC* IComponentNode::getNpc()
+    {
+        return getRootNode()->getNpc();
+    }
+
+    const NPC* IComponentNode::getNpc() const
+    {
+        return getRootNode()->getNpc();
+    }
+
+    RootNode* IComponentNode::getRootNode()
+    {
+        auto* currentPtr = getParent();
+        while (currentPtr->getParent() != nullptr)
+            currentPtr = currentPtr->getParent();
+
+
+    }
+    const RootNode* IComponentNode::getRootNode() const
+    {
+
+    }
 }
 
 void NPC::findValidTarget()

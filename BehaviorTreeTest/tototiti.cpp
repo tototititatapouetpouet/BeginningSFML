@@ -16,11 +16,9 @@ int main()
 {
     Game game;
 
-    BT::Sequence behavior;
+    BT::RootNode rootNode(&game.npc);
 
-
-    auto* decorator = new BT::DecoratorNode(&behavior);
-    new BT::Fire(decorator, &game.npc);
+    BT::Sequence behavior(&rootNode);
 
     auto* nTimes = new BT::DoUntilFailure(&behavior);
 
@@ -29,7 +27,8 @@ int main()
 
     auto* victoryDance = new BT::VictoryDance(&behavior);
 
-    //new BT::ReloadGunIfEmpty(killAnEnemy);
+    auto* ifGunEmpty = new BT::IfGunEmpty(killAnEnemy);
+    new BT::ReloadGun(ifGunEmpty, &game.npc);
     new BT::Fire(killAnEnemy, &game.npc);
     new BT::IsEnemyDead(killAnEnemy, &game.npc);
 

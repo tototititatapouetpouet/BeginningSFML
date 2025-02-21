@@ -49,6 +49,24 @@ struct NPC
         m_ammo = NPC_MAX_AMMO();
     }
 
+    bool fire()
+    {
+        if (m_ammo <= 0)
+        {
+            std::cout << "CLIC: Oh Shit!" << std::endl;
+            return false;
+        }
+
+        std::cout << "BANG : Fire the gun!" << std::endl;
+
+        m_ammo--;
+
+        if (isCurrentTargetValid())
+            getCurrentTarget()->PV--;
+
+        return true;
+    }
+
 private:
     Enemy* m_currentTarget;
     Game& m_game;
@@ -77,11 +95,16 @@ namespace BT
       , Running
     };
 
+    class RootNode;
+
     struct IComponentNode
     {
-        IComponentNode(CompositeNode* parent = nullptr);
+        IComponentNode(CompositeNode* parent);
 
         void setParent(CompositeNode* newParent);
+
+        CompositeNode* getParent();
+        const CompositeNode* getParent() const;
 
         virtual ~IComponentNode();
 
@@ -89,13 +112,20 @@ namespace BT
 
         virtual Status tick() = 0;
 
-    protected: 
+        NPC* getNpc();
+        const NPC* getNpc() const;
+
+    protected:
+        RootNode* getRootNode();
+        const RootNode* getRootNode() const;
+
+    protected:
         CompositeNode* m_parent;
     };
 
     struct ActionNode : IComponentNode
     {
-        ActionNode(CompositeNode* node = nullptr)
+        ActionNode(CompositeNode* node)
             : IComponentNode(node)
         {
         }
@@ -111,7 +141,7 @@ namespace BT
     public:
         friend IComponentNode;
 
-        CompositeNode(CompositeNode* node = nullptr)
+        CompositeNode(CompositeNode* node)
             : IComponentNode(node)
         {
         }
@@ -156,13 +186,21 @@ namespace BT
         std::vector<IComponentNode*> m_children;
     };
     
-    class DecoratorNode : public CompositeNode
+    class SingleChildNode : public CompositeNode
     {
     public:
-        DecoratorNode(CompositeNode* node = nullptr)
+        SingleChildNode(CompositeNode* node)
             : CompositeNode(node)
         {
         }
+
+        bool hasChild() const
+        {
+            return getChildren().size() == 1;
+        }
+
+        IComponentNode* getChild() { return getChildren()[0]; }
+        const IComponentNode* getChild() const { return getChildren()[0]; }
 
     private:
         void add(IComponentNode* node) override
@@ -171,6 +209,89 @@ namespace BT
                 throw;
 
             CompositeNode::add(node);
+        }
+    };
+
+    using DecoratorNode = SingleChildNode;
+
+
+    class RootNode : public SingleChildNode
+    {
+    public:
+        RootNode(NPC* npc) : SingleChildNode(nullptr), m_npc(npc)
+        {
+        }
+
+        NPC* getNpc() { return m_npc; }
+        const NPC* getNpc() const { return m_npc; }
+
+        Status tick() override
+        {
+            if (!hasChild())
+                return Success;
+
+            return getChild()->tick();
+        }
+
+    private:
+        NPC* m_npc;
+    };
+
+
+
+    class IConditionalNode : public DecoratorNode
+    {
+    public:
+        IConditionalNode(CompositeNode* node)
+            : DecoratorNode(node)
+            , m_isTickingChildNode(false)
+        {
+        }
+
+        virtual bool condition() = 0;
+
+        Status tickChildren()
+        {
+            Status childStatus = getChild()->tick();
+            if (childStatus == Success || childStatus == Failed)
+                m_isTickingChildNode = false;
+
+            return childStatus;
+        }
+
+        Status tick() override
+        {
+            if (!m_isTickingChildNode)
+            {
+                bool cond = condition();
+
+                if (!cond)
+                    return Success;
+
+                if (!hasChild())
+                    return Success;
+
+                m_isTickingChildNode = true;
+            }
+
+            return tickChildren();
+        }
+
+    private:
+        bool m_isTickingChildNode;
+    };
+
+    class IfGunEmpty : public IConditionalNode
+    {
+    public:
+        IfGunEmpty(CompositeNode* node)
+            : IConditionalNode(node)
+        {
+        }
+
+        bool condition()
+        {
+            return getNpc()->isClipEmpty();
         }
     };
 
@@ -336,7 +457,7 @@ namespace BT
     class DoNTime : public ControlNode
     {
     public:
-        DoNTime(CompositeNode* parent = nullptr, int N = 3) :
+        DoNTime(CompositeNode* parent, int N = 3) :
             ControlNode(parent, new FailedStrategy, new RunningStrategy, new RedoNTimeStrategy{N})
         {
         }
@@ -345,7 +466,7 @@ namespace BT
     class DoUntilFailure : public ControlNode
     {
     public:
-        DoUntilFailure(CompositeNode* parent = nullptr) :
+        DoUntilFailure(CompositeNode* parent) :
             ControlNode(parent, new FailAsSuccessStrategy, new RunningStrategy, new RedoStrategy)
         {
         }
@@ -354,7 +475,7 @@ namespace BT
     class Sequence : public ControlNode
     {
     public:
-        Sequence(CompositeNode* parent = nullptr) :
+        Sequence(CompositeNode* parent) :
             ControlNode(parent, new FailedStrategy, new RunningStrategy, new SuccessStrategy)
         {}
     };
@@ -362,29 +483,11 @@ namespace BT
     class Retry : public ControlNode
     {
     public:
-        Retry(CompositeNode* parent = nullptr) :
+        Retry(CompositeNode* parent) :
             ControlNode(parent, new RetryStrategy, new RunningStrategy, new SuccessStrategy)
         {
         }
     };
-
-    /*
-    class IsGunEmpty : public ActionNode
-    {
-    public:
-        IsGunEmpty(CompositeNode* parent, NPC* npc) : ActionNode(parent), m_npc(npc)
-        {
-        }
-
-        Status tick() override
-        {
-            if 
-        }
-
-    private:
-        NPC* m_npc;
-    };
-    */
 
     class ReloadGun : public ActionNode
     {
@@ -398,9 +501,13 @@ namespace BT
             m_npc->reloadGun();
             m_delay--;
             if (m_delay >= 1)
+            {
+                std::cout << "Gun reloading .";
                 return Running;
+            }
             
-            std::cout << "Gun reloaded!" << std::endl;
+            std::cout << ". DONE!" << std::endl;
+            m_delay = 2;
             return Success;
         }
 
@@ -421,9 +528,10 @@ namespace BT
             if (!m_npc->isCurrentTargetValid())
                 return Failed;
 
-            std::cout << "Fire the gun!" << std::endl;
-            m_npc->getCurrentTarget()->PV--;
-            return Success;
+            if (m_npc->fire())
+                return Success;
+            
+            return Failed;
         }
 
     private:
