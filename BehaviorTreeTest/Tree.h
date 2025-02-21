@@ -115,7 +115,6 @@ namespace BT
         NPC* getNpc();
         const NPC* getNpc() const;
 
-    protected:
         RootNode* getRootNode();
         const RootNode* getRootNode() const;
 
@@ -492,13 +491,13 @@ namespace BT
     class ReloadGun : public ActionNode
     {
     public:
-        ReloadGun(CompositeNode* parent, NPC* npc) : ActionNode(parent), m_npc(npc)
+        ReloadGun(CompositeNode* parent) : ActionNode(parent)
         {
         }
 
         Status tick() override
         {
-            m_npc->reloadGun();
+            getNpc()->reloadGun();
             m_delay--;
             if (m_delay >= 1)
             {
@@ -513,41 +512,37 @@ namespace BT
 
     private:
         int m_delay = 2;
-        NPC* m_npc;
     };
 
     class Fire : public ActionNode
     {
     public:
-        Fire(CompositeNode* parent, NPC* npc) : ActionNode(parent), m_npc(npc)
+        Fire(CompositeNode* parent) : ActionNode(parent)
         {
         }
 
         Status tick() override
         {
-            if (!m_npc->isCurrentTargetValid())
+            if (!getNpc()->isCurrentTargetValid())
                 return Failed;
 
-            if (m_npc->fire())
+            if (getNpc()->fire())
                 return Success;
             
             return Failed;
         }
-
-    private:
-        NPC* m_npc;
     };
 
     class IsEnemyDead : public ActionNode
     {
     public:
-        IsEnemyDead(CompositeNode* parent, NPC* npc) : ActionNode(parent), m_npc(npc)
+        IsEnemyDead(CompositeNode* parent) : ActionNode(parent)
         {
         }
 
         Status tick() override
         {
-            if (m_npc->getCurrentTarget()->PV <= 0)
+            if (getNpc()->getCurrentTarget()->PV <= 0)
             {
                 std::cout << "Enemy killed!" << std::endl;
                 return Success;
@@ -555,22 +550,19 @@ namespace BT
             
             return Failed;
         }
-
-    private:
-        NPC* m_npc;
     };
 
     class FindEnemy : public ActionNode
     {
     public:
-        FindEnemy(CompositeNode* parent, NPC* npc) : ActionNode(parent), m_npc(npc)
+        FindEnemy(CompositeNode* parent) : ActionNode(parent)
         {
         }
 
         Status tick() override
         {
-            m_npc->findValidTarget();
-            if (m_npc->getCurrentTarget() == nullptr)
+            getNpc()->findValidTarget();
+            if (getNpc()->getCurrentTarget() == nullptr)
             {
                 std::cout << "No enemy left!" << std::endl;
                 return Failed;
@@ -579,9 +571,6 @@ namespace BT
             std::cout << "Enemy spotted!" << std::endl;
             return Success;
         }
-
-    private:
-        NPC* m_npc;
     };
 
     class VictoryDance : public ActionNode

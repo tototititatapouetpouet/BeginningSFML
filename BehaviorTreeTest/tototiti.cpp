@@ -18,19 +18,21 @@ int main()
 
     BT::RootNode rootNode(&game.npc);
 
+    rootNode.getRootNode();
+
     BT::Sequence behavior(&rootNode);
 
     auto* nTimes = new BT::DoUntilFailure(&behavior);
 
-    auto* findEnemy = new BT::FindEnemy(nTimes, &game.npc);
+    auto* findEnemy = new BT::FindEnemy(nTimes);
     auto* killAnEnemy = new BT::Retry(nTimes);
 
     auto* victoryDance = new BT::VictoryDance(&behavior);
 
     auto* ifGunEmpty = new BT::IfGunEmpty(killAnEnemy);
-    new BT::ReloadGun(ifGunEmpty, &game.npc);
-    new BT::Fire(killAnEnemy, &game.npc);
-    new BT::IsEnemyDead(killAnEnemy, &game.npc);
+    new BT::ReloadGun(ifGunEmpty);
+    new BT::Fire(killAnEnemy);
+    new BT::IsEnemyDead(killAnEnemy);
 
     testBourrin(&behavior);
 }
