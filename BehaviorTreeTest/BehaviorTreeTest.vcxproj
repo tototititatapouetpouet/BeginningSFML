@@ -127,9 +127,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="NPC.h" />
+    <ClInclude Include="NPCBehavior.h" />
     <ClInclude Include="Tree.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="NPC.cpp" />
     <ClCompile Include="tototiti.cpp" />
     <ClCompile Include="Tree.cpp" />
   </ItemGroup>

@@ -5,87 +5,10 @@
 #include <array>
 #include <type_traits>
 
-struct Game;
-
-struct Enemy
-{
-    int PV = 3;
-};
-
-namespace {
-    int NPC_MAX_AMMO() { return 5; }
-}
-
-struct NPC
-{
-    NPC(Game& game) : m_game(game), m_currentTarget(nullptr), m_ammo(NPC_MAX_AMMO())
-    { }
-
-    void findValidTarget();
-
-    Enemy* getCurrentTarget()
-    {
-        return m_currentTarget;
-    }
-
-    bool isCurrentTargetValid() const
-    {
-        if (m_currentTarget == nullptr)
-            return false;
-
-        if (m_currentTarget->PV <= 0)
-            return false;
-
-        return true;
-    }
-
-    bool isClipEmpty() const
-    {
-        return m_ammo <= 0;
-    }
-
-    void reloadGun()
-    {
-        m_ammo = NPC_MAX_AMMO();
-    }
-
-    bool fire()
-    {
-        if (m_ammo <= 0)
-        {
-            std::cout << "CLIC: Oh Shit!" << std::endl;
-            return false;
-        }
-
-        std::cout << "BANG : Fire the gun!" << std::endl;
-
-        m_ammo--;
-
-        if (isCurrentTargetValid())
-            getCurrentTarget()->PV--;
-
-        return true;
-    }
-
-private:
-    Enemy* m_currentTarget;
-    Game& m_game;
-    int m_ammo;
-};
-
-struct Game
-{
-    Game() : npc(*this)
-    {}
-
-    NPC npc;
-    std::array<Enemy, 5> enemies;
-};
-
+class NPC;
 
 namespace BT
 {
-
     class ICompositeNode;
 
     enum Status
@@ -280,20 +203,6 @@ namespace BT
         bool m_isTickingChildNode;
     };
 
-    class IfGunEmpty : public IConditionalNode
-    {
-    public:
-        IfGunEmpty(ICompositeNode* node)
-            : IConditionalNode(node)
-        {
-        }
-
-        bool condition()
-        {
-            return getNpc()->isClipEmpty();
-        }
-    };
-
     class ControlNode;
 
     template<Status STATUS>
@@ -486,115 +395,5 @@ namespace BT
             ControlNode(parent, new RetryStrategy, new RunningStrategy, new SuccessStrategy)
         {
         }
-    };
-
-    class ReloadGun : public IActionNode
-    {
-    public:
-        ReloadGun(ICompositeNode* parent) : IActionNode(parent)
-        {
-        }
-
-        Status tick() override
-        {
-            getNpc()->reloadGun();
-            m_delay--;
-            if (m_delay >= 1)
-            {
-                std::cout << "Gun reloading .";
-                return Running;
-            }
-            
-            std::cout << ". DONE!" << std::endl;
-            m_delay = 2;
-            return Success;
-        }
-
-    private:
-        int m_delay = 2;
-    };
-
-    class Fire : public IActionNode
-    {
-    public:
-        Fire(ICompositeNode* parent) : IActionNode(parent)
-        {
-        }
-
-        Status tick() override
-        {
-            if (!getNpc()->isCurrentTargetValid())
-                return Failed;
-
-            if (getNpc()->fire())
-                return Success;
-            
-            return Failed;
-        }
-    };
-
-    class IsEnemyDead : public IActionNode
-    {
-    public:
-        IsEnemyDead(ICompositeNode* parent) : IActionNode(parent)
-        {
-        }
-
-        Status tick() override
-        {
-            if (getNpc()->getCurrentTarget()->PV <= 0)
-            {
-                std::cout << "Enemy killed!" << std::endl;
-                return Success;
-            }
-            
-            return Failed;
-        }
-    };
-
-    class FindEnemy : public IActionNode
-    {
-    public:
-        FindEnemy(ICompositeNode* parent) : IActionNode(parent)
-        {
-        }
-
-        Status tick() override
-        {
-            getNpc()->findValidTarget();
-            if (getNpc()->getCurrentTarget() == nullptr)
-            {
-                std::cout << "No enemy left!" << std::endl;
-                return Failed;
-            }
-
-            std::cout << "Enemy spotted!" << std::endl;
-            return Success;
-        }
-    };
-
-    class VictoryDance : public IActionNode
-    {
-    public:
-        VictoryDance(ICompositeNode* parent) : IActionNode(parent)
-        {
-        }
-
-        Status tick() override
-        {
-            if (m_delay <= 0)
-            {
-                std::cout << std::endl;
-                return Success;
-            }
-            std::vector<std::string> danceSteps = { "\\o/", "|o/", "\\o|", "-o-"};
-            std::cout << danceSteps[m_delay % 4] << " ";
-            m_delay--;
-
-            return Running;
-        }
-
-    private:
-        int m_delay = 12;
     };
 }

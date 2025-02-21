@@ -56,17 +56,4 @@ namespace BT
     }
 }
 
-void NPC::findValidTarget()
-{
-    for (auto& enemy : m_game.enemies)
-    {
-        if (enemy.PV > 0)
-        {
-            m_currentTarget = &enemy;
-            return;
-        }
-    }
-
-    m_currentTarget = nullptr;
-}
 
