@@ -39,12 +39,20 @@ namespace BT
 
     RootNode* IComponentNode::getRootNode()
     {
-        return getParent()->getRootNode();
+        auto* currentPtr = this;
+        while (currentPtr->getParent() != nullptr)
+            currentPtr = currentPtr->getParent();
+
+        return static_cast<RootNode*>(currentPtr);
     }
 
     const RootNode* IComponentNode::getRootNode() const
     {
-        return getParent()->getRootNode();
+        const auto* currentPtr = this;
+        while (currentPtr->getParent() != nullptr)
+            currentPtr = currentPtr->getParent();
+
+        return static_cast<const RootNode*>(currentPtr);
     }
 }
 

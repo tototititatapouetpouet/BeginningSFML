@@ -115,8 +115,8 @@ namespace BT
         NPC* getNpc();
         const NPC* getNpc() const;
 
-        virtual RootNode* getRootNode();
-        virtual const RootNode* getRootNode() const;
+        RootNode* getRootNode();
+        const RootNode* getRootNode() const;
 
     protected:
         CompositeNode* m_parent;
@@ -231,9 +231,6 @@ namespace BT
 
             return getChild()->tick();
         }
-
-        RootNode* getRootNode() override { return this; }
-        const RootNode* getRootNode() const override { return this; }
 
     private:
         NPC* m_npc;
