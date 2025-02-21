@@ -13,7 +13,15 @@ public:
     void goTo(IGameObject* location);
 
     void eatSpottedFood();
+
+    void bark();
 };
+
+//  Eat every food available.
+//      -> locate food
+//      -> go to food
+//      -> eat food
+//  One there is no food left, bark for more of it!
 
 class Game2
 {
