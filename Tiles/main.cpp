@@ -12,6 +12,7 @@ int main()
     sf::RenderWindow window(sf::VideoMode(1000, 1000), "SFML works!");
 
     Scene scene("Level.txt");
+    scene.save("Level2.txt");
 
     sf::CircleShape shape(100.f);
     shape.setFillColor(sf::Color::Green);
@@ -23,6 +24,11 @@ int main()
         {
             if (event.type == sf::Event::Closed)
                 window.close();
+
+            if (event.type == sf::Event::MouseButtonPressed)
+            {
+                scene.click(event.mouseButton.x, event.mouseButton.y);
+            }
 
             if (event.type == sf::Event::KeyPressed)
             {

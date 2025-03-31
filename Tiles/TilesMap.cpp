@@ -22,6 +22,22 @@ MapRepresentation getRepresentationFromFile(std::ifstream& file)
     return theMap;
 }
 
+MapRepresentation TilesMap::getRepr() const
+{
+    MapRepresentation retVal;
+    retVal.resize(m_height);
+
+    for (int row = 0; row < m_height; ++row)
+    {
+        retVal[row].resize(m_width);
+        for (int col = 0; col < m_width; ++col)
+        {
+            retVal[row][col] = getTile(row, col);
+        }
+    }
+    return retVal;
+}
+
 TilesMap::TilesMap(const MapRepresentation& repr) : m_width(0), m_height(0)
 {
     m_width = static_cast<int>(repr[0].size());
@@ -63,6 +79,11 @@ int clamp(int min, int max, int val)
     if (val > max)
         return max;
     return val;
+}
+
+const int& TilesMap::getTileSize() const
+{
+    return m_tileSize;
 }
 
 void TilesMap::render(sf::RenderWindow& w, const View& view)

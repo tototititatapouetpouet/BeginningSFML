@@ -7,11 +7,19 @@
 
 #include <stdexcept>
 
-IGameObject::IGameObject(Scene& scene)
+IGameObject::IGameObject(Scene& scene) : m_position(0, 0)
 {
 }
 
+void IGameObject::setPosition(const Vec2f& position)
+{
+    m_position = position;
+}
 
+const Vec2f& IGameObject::getPosition() const
+{ 
+    return m_position;
+}
 
 void GameObjectFactory::_registerType(const std::string& typeName, CreationRecipe fn)
 {
@@ -38,10 +46,6 @@ GameObjectFactory& theGameObjectFactory()
     return factory;
 }
 
-#include<iostream>
 GameObjectFactory::GameObjectFactory()
 {
-    std::cout << "COucou!" << "\n";
 }
-
-GameObjectFactory maGameObjectFactory;

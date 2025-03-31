@@ -20,8 +20,12 @@ public:
 
     void render(sf::RenderWindow& w);
 
+    void save(const std::string& outputLevelFilePath) const;
+
     View& getView() { return m_view; }
     const View& getView() const { return m_view; }
+
+    void click(int x, int y);
 
 private:
     std::vector<IGameObject*> m_allGameObjects;

@@ -20,6 +20,10 @@ public:
 
     void render(sf::RenderWindow& w, const View& view);
 
+    MapRepresentation getRepr() const;
+
+    const int& getTileSize() const;
+
 private:
     TileType& getTile(int row, int col) { return m_tiles[row * m_width + col]; }
     const TileType& getTile(int row, int col) const { return m_tiles[row * m_width + col]; }

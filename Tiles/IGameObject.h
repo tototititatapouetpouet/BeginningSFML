@@ -7,6 +7,14 @@
 using GameObjectType = std::string;
 class Scene;
 
+
+struct Vec2f
+{
+    Vec2f(float x_ = 0.f, float y_ = 0.f) : x(x_), y(y_) {}
+
+    float x, y;
+};
+
 class IGameObject
 {
 public:
@@ -15,6 +23,12 @@ public:
     virtual ~IGameObject() = default;
 
     virtual GameObjectType getGameObjectType() const = 0;
+
+    void setPosition(const Vec2f& position);
+    const Vec2f& getPosition() const;
+
+private:
+    Vec2f m_position;
 };
 
 #define DECLARE_GAME_OBJECT()       \
