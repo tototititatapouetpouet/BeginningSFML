@@ -5,5 +5,5 @@ struct Player : public IGameObject
 {
     DECLARE_GAME_OBJECT()
 
-    Player();
+    Player(Scene& scene);
 };

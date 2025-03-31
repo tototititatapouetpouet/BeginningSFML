@@ -1,7 +1,7 @@
 #include "Boss.h"
 
-Boss::Boss()
-    : Enemy()
+Boss::Boss(Scene& scene)
+    : Enemy(scene)
 {
 }
 

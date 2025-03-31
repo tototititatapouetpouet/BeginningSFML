@@ -7,7 +7,7 @@
 
 #include <stdexcept>
 
-IGameObject::IGameObject()
+IGameObject::IGameObject(Scene& scene)
 {
 }
 
@@ -22,13 +22,14 @@ void GameObjectFactory::_registerType(const std::string& typeName, CreationRecip
     m_creationRecipes[typeName] = fn;
 }
 
-IGameObject* GameObjectFactory::create(const std::string& typeName)
+IGameObject* GameObjectFactory::create(const std::string& typeName, Scene& scene)
 {
     auto it = m_creationRecipes.find(typeName);
     if (it == m_creationRecipes.end())
         throw std::runtime_error("Warning trying to create an unregistered entity type!");
 
-    return it->second();
+    CreationRecipe fn = it->second;
+    return fn(scene);
 }
 
 GameObjectFactory& theGameObjectFactory()
@@ -37,11 +38,10 @@ GameObjectFactory& theGameObjectFactory()
     return factory;
 }
 
+#include<iostream>
 GameObjectFactory::GameObjectFactory()
 {
-    //registerType<Player>();
-    registerType<Enemy>();
-    registerType<Enemy2>();
-    registerType<Boss>();
+    std::cout << "COucou!" << "\n";
 }
 
+GameObjectFactory maGameObjectFactory;

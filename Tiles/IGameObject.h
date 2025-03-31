@@ -5,10 +5,12 @@
 #include <map>
 
 using GameObjectType = std::string;
+class Scene;
 
-struct IGameObject
+class IGameObject
 {
-    IGameObject();
+public:
+    IGameObject(Scene& scene);
 
     virtual ~IGameObject() = default;
 
@@ -21,7 +23,8 @@ static std::string className();
 
 #define DEFINE_GAME_OBJECT(TheClassName) \
 GameObjectType TheClassName::getGameObjectType() const { return className(); } \
-std::string TheClassName::className() { return #TheClassName; }
+std::string TheClassName::className() { return #TheClassName; } \
+bool register##TheClassName = [](){theGameObjectFactory().registerType<TheClassName>(); return true; }();
 
 
 
@@ -31,14 +34,15 @@ class GameObjectFactory
 public:
     GameObjectFactory();
 
-    using CreationRecipe = std::function<IGameObject* ()>;
+    using CreationRecipe = std::function<IGameObject* (Scene&)>;
+
     void _registerType(const std::string& typeName, CreationRecipe fn);
-    IGameObject* create(const std::string& typeName);
+    IGameObject* create(const std::string& typeName, Scene& scene);
 
     template<typename GameObjectType>
     void registerType()
     {
-        _registerType(GameObjectType::className(), []() ->IGameObject* { return new GameObjectType; });
+        _registerType(GameObjectType::className(), [](Scene& scene) -> IGameObject* { return new GameObjectType(scene); });
     }
 
 private:

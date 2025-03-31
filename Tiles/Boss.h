@@ -5,5 +5,5 @@ struct Boss : public Enemy
 {
     DECLARE_GAME_OBJECT()
 
-    Boss();
+    Boss(Scene& scene);
 };

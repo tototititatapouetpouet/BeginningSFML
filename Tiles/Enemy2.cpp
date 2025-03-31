@@ -1,7 +1,7 @@
 #include "Enemy2.h"
 
-Enemy2::Enemy2()
-    : IGameObject()
+Enemy2::Enemy2(Scene& scene)
+    : IGameObject(scene)
 {
 }
 

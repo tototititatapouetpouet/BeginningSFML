@@ -5,5 +5,5 @@ struct Enemy : public IGameObject
 {
     DECLARE_GAME_OBJECT()
 
-    Enemy();
+    Enemy(Scene& scene);
 };
