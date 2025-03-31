@@ -2,11 +2,6 @@
 
 #include "IGameObject.h"
 
-#include "Player.h"
-#include "Enemy.h"
-#include "Enemy2.h"
-#include "Boss.h"
-
 #include <fstream>
 #include <iostream>
 
@@ -28,20 +23,6 @@ MapRepresentation getRepresentationFromFile(std::ifstream& file)
     return theMap;
 }
 
-IGameObject* createGameObject(const std::string& name)
-{
-    if (name == "Player")
-        return new Player;
-    if (name == "Boss")
-        return new Boss;
-    if (name == "Enemy")
-        return new Enemy;
-    if (name == "Enemy2")
-        return new Enemy2;
-
-    throw;
-}
-
 std::vector<IGameObject*> getAllGameObjectFromFile(std::ifstream& file)
 {
     std::vector<IGameObject*> result;
@@ -56,7 +37,7 @@ std::vector<IGameObject*> getAllGameObjectFromFile(std::ifstream& file)
         if (line.empty())
             continue;
 
-        result.push_back(createGameObject(line));
+        result.push_back(theGameObjectFactory().create(line));
     }
 
     return result;
