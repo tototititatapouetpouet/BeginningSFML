@@ -31,4 +31,7 @@ private:
     std::vector<IGameObject*> m_allGameObjects;
     TilesMap* m_decor;
     View m_view;
+
+public:
+    int m_selectedTileIdx = 0;
 };

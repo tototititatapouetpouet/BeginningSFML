@@ -44,10 +44,10 @@ void Scene::click(int x, int y)
     float worldCoordX = (static_cast<float>(x) + m_view.posX) / m_view.scale;
     float worldCoordY = (static_cast<float>(y) + m_view.posY) / m_view.scale;
 
-    int tileCol = worldCoordX / m_decor->getTileSize();
-    int tileRow = worldCoordY / m_decor->getTileSize();
+    int tileCol = static_cast<int>(worldCoordX / m_decor->getTileSize());
+    int tileRow = static_cast<int>(worldCoordY / m_decor->getTileSize());
 
-    m_decor->setTileSafe(tileRow, tileCol, 'T');
+    m_decor->setTileSafe(tileRow, tileCol, m_decor->getAllKnowTileTypes()[m_selectedTileIdx]);
 }
 
 void Scene::save(const std::string& outputLevelFilePath) const
@@ -71,4 +71,6 @@ void Scene::save(const std::string& outputLevelFilePath) const
 void Scene::render(sf::RenderWindow& w)
 {
     m_decor->render(w, m_view);
+
+
 }

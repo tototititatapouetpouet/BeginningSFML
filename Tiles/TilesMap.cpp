@@ -57,16 +57,20 @@ TilesMap::TilesMap(const MapRepresentation& repr) : m_width(0), m_height(0)
     m_texture.loadFromFile("tileset.png");
 }
 
-sf::Vector2i getTileCoordinateInTexture(const TileType& tile)
+std::map<TileType, sf::Vector2i>& TilesMap::getTileCoordinateInTextureMap()
 {
     static std::map<TileType, sf::Vector2i> tileMap = {
         {'H', {0,  0} }
       , {'F', {0,  3} }
       , {'T', {12, 6} }
     };
+    return tileMap;
+}
 
-    auto it = tileMap.find(tile);
-    if (it == tileMap.end())
+sf::Vector2i TilesMap::getTileCoordinateInTexture(const TileType& tile)
+{
+    auto it = getTileCoordinateInTextureMap().find(tile);
+    if (it == getTileCoordinateInTextureMap().end())
         throw;
 
     return it->second;
@@ -84,6 +88,15 @@ int clamp(int min, int max, int val)
 const int& TilesMap::getTileSize() const
 {
     return m_tileSize;
+}
+
+std::vector<TileType> TilesMap::getAllKnowTileTypes() const
+{
+    std::vector<TileType> result;
+    for (auto& [key, val] : getTileCoordinateInTextureMap())
+        result.push_back(key);
+
+    return result;
 }
 
 void TilesMap::setTile(int row, int col, const TileType& tile)

@@ -28,8 +28,12 @@ public:
     const TileType& getTile(int row, int col) const { return m_tiles[row * m_width + col]; }
     void setTile(int row, int col, const TileType& tile);
     bool setTileSafe(int row, int col, const TileType& tile);
+    std::vector<TileType> getAllKnowTileTypes() const;
 
 private:
+    sf::Vector2i getTileCoordinateInTexture(const TileType& tile);
+    static std::map<TileType, sf::Vector2i>& getTileCoordinateInTextureMap();
+
     std::vector<TileType> m_tiles;
 
     sf::Texture m_texture;

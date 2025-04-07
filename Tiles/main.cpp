@@ -12,7 +12,6 @@ int main()
     sf::RenderWindow window(sf::VideoMode(1000, 1000), "SFML works!");
 
     Scene scene("Level.txt");
-    scene.save("Level2.txt");
 
     sf::CircleShape shape(100.f);
     shape.setFillColor(sf::Color::Green);
@@ -55,6 +54,21 @@ int main()
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Subtract))
                 {
                     scene.getView().scale /= 1.1f;
+                }
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::P))
+                {
+                    scene.m_selectedTileIdx++;
+                    scene.m_selectedTileIdx %= 3; //    TODO : le 3 ca serait bien de savoir d'ou ca vient.
+                }
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::M))
+                {
+                    scene.m_selectedTileIdx--;
+                    if (scene.m_selectedTileIdx == -1)
+                        scene.m_selectedTileIdx = (3 - 1);//    TODO : le 3 ca serait bien de savoir d'ou ca vient.
+                }
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+                {
+                    scene.save("Level.txt");
                 }
             }
         }
