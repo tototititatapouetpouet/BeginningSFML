@@ -86,6 +86,20 @@ const int& TilesMap::getTileSize() const
     return m_tileSize;
 }
 
+void TilesMap::setTile(int row, int col, const TileType& tile)
+{
+    getTile(row, col) = tile;
+}
+
+bool TilesMap::setTileSafe(int row, int col, const TileType& tile)
+{
+    if ((row < 0) || (row >= m_height) || (col < 0) || (col >= m_width))
+        return false;
+
+    setTile(row, col, tile);
+    return true;
+}
+
 void TilesMap::render(sf::RenderWindow& w, const View& view)
 {
     float tileSizeInScreen = m_tileSize * view.scale;

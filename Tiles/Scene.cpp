@@ -41,6 +41,13 @@ void Scene::click(int x, int y)
 {
     // TODO : On prend le temps de faire la conversion screen space to world space.
     //        Ensuite, on fait la conversion world space vers tuile index.
+    float worldCoordX = (static_cast<float>(x) + m_view.posX) / m_view.scale;
+    float worldCoordY = (static_cast<float>(y) + m_view.posY) / m_view.scale;
+
+    int tileCol = worldCoordX / m_decor->getTileSize();
+    int tileRow = worldCoordY / m_decor->getTileSize();
+
+    m_decor->setTileSafe(tileRow, tileCol, 'T');
 }
 
 void Scene::save(const std::string& outputLevelFilePath) const

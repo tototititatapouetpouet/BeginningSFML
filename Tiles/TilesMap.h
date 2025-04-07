@@ -24,10 +24,12 @@ public:
 
     const int& getTileSize() const;
 
-private:
     TileType& getTile(int row, int col) { return m_tiles[row * m_width + col]; }
     const TileType& getTile(int row, int col) const { return m_tiles[row * m_width + col]; }
+    void setTile(int row, int col, const TileType& tile);
+    bool setTileSafe(int row, int col, const TileType& tile);
 
+private:
     std::vector<TileType> m_tiles;
 
     sf::Texture m_texture;
