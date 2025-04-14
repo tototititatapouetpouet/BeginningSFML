@@ -11,9 +11,9 @@ struct Player : public IGameObject
     void loadAttributes(const AttributesDict& attributes) override;
 
 public:
-    std::string name = "toto";
-    int PV = 3;
-    int strenght = 0;
-    int dexterity = 0;
+    Attribute<std::string> name = { "name", "toto" };
+    Attribute<int> PV = { "PV", 3 };
+    Attribute<int> strenght = { "strenght", 0 };
+    Attribute<int> dexterity = { "dexterity", 0 };
     Vec2f position;
 };

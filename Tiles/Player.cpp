@@ -1,6 +1,7 @@
 #include "Player.h"
 
 #include <iostream>
+#include <array>
 #include <fstream>
 
 Player::Player(Scene& scene)
@@ -10,25 +11,22 @@ Player::Player(Scene& scene)
 
 void Player::saveAttributes(std::ofstream& file)
 {
-    file << " name " << name
-         << " PV " << PV
-         << " strenght " << strenght
-         << " dexterity " << dexterity;
+    std::array<IAttribute*, 4> allAttributes = {&name, &PV, &strenght, &dexterity };
+    for (auto*& attribute : allAttributes)
+        attribute->save(file);
 }
 
-void Player::loadAttributes(const AttributesDict& attributes)
+void Player::loadAttributes(const AttributesDict& attributeDict)
 {
-    auto it_name = attributes.find("name");
-    name = it_name->second;
+    std::array<IAttribute*, 4> allAttributes = { &name, &PV, &strenght, &dexterity };
+    for (auto*& attribute : allAttributes)
+    {
+        auto it = attributeDict.find(attribute->getName());
+        if (it == attributeDict.end())
+            continue;
 
-    auto it_PV = attributes.find("PV");
-    PV = stoi(it_PV->second);
-
-    auto it_strenght = attributes.find("strenght");
-    strenght = stoi(it_strenght->second);
-
-    auto it_dexterity = attributes.find("dexterity");
-    dexterity = stoi(it_dexterity->second);
+        attribute->load(it->second);
+    }
 }
 
 // Grace a la macro magique
