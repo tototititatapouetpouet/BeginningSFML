@@ -28,6 +28,8 @@ struct Enemy : public IGameObject
 {
     void update() override {}
     bool isDead() override { return PV <= 0; }
+    
+public:
     int PV = 3;
 };
 

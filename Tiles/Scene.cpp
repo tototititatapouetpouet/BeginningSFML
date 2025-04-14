@@ -4,6 +4,7 @@
 #include "TilesMap.h"
 
 #include <fstream>
+#include <sstream>
 
 std::vector<IGameObject*> getAllGameObjectFromFile(std::ifstream& file, Scene& scene)
 {
@@ -12,14 +13,28 @@ std::vector<IGameObject*> getAllGameObjectFromFile(std::ifstream& file, Scene& s
     while (!file.eof())
     {
         std::string line;
+        std::getline(file, line);
+
+        std::istringstream iss(line);
+        
         float px;
         float py;
-        file >> line >> px >> py;
+        std::string entityType;
+        iss >> entityType >> px >> py;
 
-        if (line.empty())
+        if (entityType.empty())
             continue;
 
-        auto* gameObject = theGameObjectFactory().create(line, scene);
+        std::map<std::string, std::string> attributes;
+        while (!iss.eof())
+        {
+            std::string key, value;
+            iss >> key >> value;
+            attributes[key] = value;
+        }
+
+        auto* gameObject = theGameObjectFactory().create(entityType, scene);
+        gameObject->loadAttributes(attributes);
         gameObject->setPosition(Vec2f(px, py));
         result.push_back(gameObject);
     }
@@ -64,6 +79,7 @@ void Scene::save(const std::string& outputLevelFilePath) const
     for (const auto& gameObject : m_allGameObjects)
     {
         file << gameObject->getGameObjectType() << " " << gameObject->getPosition().x << " " << gameObject->getPosition().y;
+        gameObject->saveAttributes(file);
         file << "\n";
     }
 }
