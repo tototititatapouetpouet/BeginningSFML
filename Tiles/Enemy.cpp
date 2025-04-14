@@ -7,15 +7,9 @@ Enemy::Enemy(Scene& scene)
 {
 }
 
-void Enemy::saveAttributes(std::ofstream& file)
+std::vector<IAttribute*> Enemy::getAllAttributes()
 {
-    file << " PV " << this->PV;
-}
-
-void Enemy::loadAttributes(const AttributesDict& attributes)
-{
-    auto it = attributes.find("PV");
-    PV = stoi(it->second);
+    return { &PV };
 }
 
 DEFINE_GAME_OBJECT(Enemy)

@@ -62,10 +62,12 @@ public:
     void setPosition(const Vec2f& position);
     const Vec2f& getPosition() const;
 
-    virtual void saveAttributes(std::ofstream& file) = 0;
+    virtual std::vector<IAttribute*> getAllAttributes() = 0;
+
+    void saveAttributes(std::ofstream& file);
     
     using AttributesDict = std::map<std::string, std::string>;
-    virtual void loadAttributes(const AttributesDict& attributes) = 0;
+    void loadAttributes(const AttributesDict& attributes);
 
 private:
     Vec2f m_position;

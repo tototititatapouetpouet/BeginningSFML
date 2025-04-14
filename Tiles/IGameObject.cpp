@@ -21,6 +21,24 @@ const Vec2f& IGameObject::getPosition() const
     return m_position;
 }
 
+void IGameObject::saveAttributes(std::ofstream& file)
+{
+    for (auto*& attribute : getAllAttributes())
+        attribute->save(file);
+}
+
+void IGameObject::loadAttributes(const AttributesDict& attributeDict)
+{
+    for (auto*& attribute : getAllAttributes())
+    {
+        auto it = attributeDict.find(attribute->getName());
+        if (it == attributeDict.end())
+            continue;
+
+        attribute->load(it->second);
+    }
+}
+
 void GameObjectFactory::_registerType(const std::string& typeName, CreationRecipe fn)
 {
     auto it = m_creationRecipes.find(typeName);

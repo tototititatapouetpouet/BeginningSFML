@@ -9,24 +9,9 @@ Player::Player(Scene& scene)
 {
 }
 
-void Player::saveAttributes(std::ofstream& file)
+std::vector<IAttribute*> Player::getAllAttributes()
 {
-    std::array<IAttribute*, 4> allAttributes = {&name, &PV, &strenght, &dexterity };
-    for (auto*& attribute : allAttributes)
-        attribute->save(file);
-}
-
-void Player::loadAttributes(const AttributesDict& attributeDict)
-{
-    std::array<IAttribute*, 4> allAttributes = { &name, &PV, &strenght, &dexterity };
-    for (auto*& attribute : allAttributes)
-    {
-        auto it = attributeDict.find(attribute->getName());
-        if (it == attributeDict.end())
-            continue;
-
-        attribute->load(it->second);
-    }
+    return { &name, &PV, &strenght, &dexterity };
 }
 
 // Grace a la macro magique

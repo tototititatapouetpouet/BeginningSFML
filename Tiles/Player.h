@@ -7,8 +7,7 @@ struct Player : public IGameObject
 
     Player(Scene& scene);
 
-    void saveAttributes(std::ofstream& file) override;
-    void loadAttributes(const AttributesDict& attributes) override;
+    std::vector<IAttribute*> getAllAttributes() override;
 
 public:
     Attribute<std::string> name = { "name", "toto" };

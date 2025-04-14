@@ -7,10 +7,10 @@ struct Enemy2 : public IGameObject
 
     Enemy2(Scene& scene);
 
-    void saveAttributes(std::ofstream& file) override;
-    void loadAttributes(const AttributesDict& attributes) override;
+    std::vector<IAttribute*> getAllAttributes() override;
 
-    int PV = 2;
+    Attribute<int> PV = { "PV", 2 };
+    Attribute<int> age = { "age", 12 };
+
     Vec2f position;
-    int age = 12;
 };
